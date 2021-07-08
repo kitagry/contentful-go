@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## v0.7.0 (2021-07-08)
+
+### Added
+
+- feat!: Use environments for entry tasks (2021-07-08)
+
+- feat!: Use environments for extension management (2021-07-08)
+
+- feat!: Use environments for operating on entries (2021-07-08)
+
+### Fixed
+
+- fix: create content type with spaces in the name (2021-06-25)
+
 ## v0.6.2 (2021-07-07)
 
 ### Added
