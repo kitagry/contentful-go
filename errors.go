@@ -39,6 +39,13 @@ type APIError struct {
 	err *ErrorResponse
 }
 
+func (a APIError) ErrorResponse() (*ErrorResponse, bool) {
+	if a.err == nil {
+		return nil, false
+	}
+	return a.err, true
+}
+
 // AccessTokenInvalidError for 401 errors
 type AccessTokenInvalidError struct {
 	APIError
