@@ -1,4 +1,4 @@
-module github.com/regressivetech/contentful-go
+module github.com/kitagry/contentful-go
 
 go 1.18
 
