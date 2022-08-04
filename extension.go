@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -41,10 +42,10 @@ func (extension *Extension) GetVersion() int {
 }
 
 // List returns an extensions collection
-func (service *ExtensionsService) List(env *Environment) *Collection {
+func (service *ExtensionsService) List(ctx context.Context, env *Environment) *Collection {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/extensions", env.Sys.Space.Sys.ID, env.Sys.ID)
 
-	req, err := service.c.newRequest("GET", path, nil, nil)
+	req, err := service.c.newRequest(ctx, "GET", path, nil, nil)
 	if err != nil {
 		return &Collection{}
 	}
@@ -57,12 +58,12 @@ func (service *ExtensionsService) List(env *Environment) *Collection {
 }
 
 // Get returns a single extension
-func (service *ExtensionsService) Get(env *Environment, extensionID string) (*Extension, error) {
+func (service *ExtensionsService) Get(ctx context.Context, env *Environment, extensionID string) (*Extension, error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/extensions/%s", env.Sys.Space.Sys.ID, env.Sys.ID, extensionID)
 	query := url.Values{}
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, query, nil)
+	req, err := service.c.newRequest(ctx, method, path, query, nil)
 	if err != nil {
 		return &Extension{}, err
 	}
@@ -76,7 +77,7 @@ func (service *ExtensionsService) Get(env *Environment, extensionID string) (*Ex
 }
 
 // Upsert updates or creates a new extension
-func (service *ExtensionsService) Upsert(env *Environment, e *Extension) error {
+func (service *ExtensionsService) Upsert(ctx context.Context, env *Environment, e *Extension) error {
 	bytesArray, err := json.Marshal(e)
 	if err != nil {
 		return err
@@ -93,7 +94,7 @@ func (service *ExtensionsService) Upsert(env *Environment, e *Extension) error {
 		method = "POST"
 	}
 
-	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	req, err := service.c.newRequest(ctx, method, path, nil, bytes.NewReader(bytesArray))
 	if err != nil {
 		return err
 	}
@@ -104,11 +105,11 @@ func (service *ExtensionsService) Upsert(env *Environment, e *Extension) error {
 }
 
 // Delete the extension
-func (service *ExtensionsService) Delete(env *Environment, extensionID string) error {
+func (service *ExtensionsService) Delete(ctx context.Context, env *Environment, extensionID string) error {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/extensions/%s", env.Sys.Space.Sys.ID, env.Sys.ID, extensionID)
 	method := "DELETE"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}

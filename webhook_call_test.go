@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -31,7 +32,7 @@ func TestWebhookCallsService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.WebhookCalls.List(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h").Next()
+	collection, err := cma.WebhookCalls.List(context.Background(), spaceID, "0KzM2HxYr5O1pZ4SaUzK8h").Next()
 	assertions.Nil(err)
 
 	spaces := collection.ToWebhookCall()
@@ -61,7 +62,7 @@ func TestWebhookCallsService_Get(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	callDetails, err := cma.WebhookCalls.Get(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h", "bar")
+	callDetails, err := cma.WebhookCalls.Get(context.Background(), spaceID, "0KzM2HxYr5O1pZ4SaUzK8h", "bar")
 	assertions.Nil(err)
 	assertions.Equal("bar", callDetails.Sys.ID)
 	assertions.Equal("https://webhooks.example.com/endpoint", callDetails.Request.URL)
@@ -89,7 +90,7 @@ func TestWebhookCallsService_Get_2(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.WebhookCalls.Get(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h", "bar")
+	_, err = cma.WebhookCalls.Get(context.Background(), spaceID, "0KzM2HxYr5O1pZ4SaUzK8h", "bar")
 	assertions.Empty(err)
 }
 
@@ -115,7 +116,7 @@ func TestWebhookCallsService_Health(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	health, err := cma.WebhookCalls.Health(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h")
+	health, err := cma.WebhookCalls.Health(context.Background(), spaceID, "0KzM2HxYr5O1pZ4SaUzK8h")
 	assertions.Nil(err)
 	assertions.Equal("bar", health.Sys.ID)
 	assertions.Equal(233, health.Calls.Total)
@@ -143,6 +144,6 @@ func TestWebhookCallsService_Health_2(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.WebhookCalls.Health(spaceID, "0KzM2HxYr5O1pZ4SaUzK8h")
+	_, err = cma.WebhookCalls.Health(context.Background(), spaceID, "0KzM2HxYr5O1pZ4SaUzK8h")
 	assertions.Nil(err)
 }

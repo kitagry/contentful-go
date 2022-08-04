@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -62,11 +63,11 @@ func (asset *Asset) GetVersion() int {
 }
 
 // List returns asset collection
-func (service *AssetsService) List(spaceID string) *Collection {
+func (service *AssetsService) List(ctx context.Context, spaceID string) *Collection {
 	path := fmt.Sprintf("/spaces/%s/assets", spaceID)
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return &Collection{}
 	}
@@ -79,11 +80,11 @@ func (service *AssetsService) List(spaceID string) *Collection {
 }
 
 // ListPublished return a content type collection, with only activated content types
-func (service *AssetsService) ListPublished(spaceID string) *Collection {
+func (service *AssetsService) ListPublished(ctx context.Context, spaceID string) *Collection {
 	path := fmt.Sprintf("/spaces/%s/public/assets", spaceID)
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return nil
 	}
@@ -96,11 +97,11 @@ func (service *AssetsService) ListPublished(spaceID string) *Collection {
 }
 
 // Get returns a single asset entity
-func (service *AssetsService) Get(spaceID, assetID string) (*Asset, error) {
+func (service *AssetsService) Get(ctx context.Context, spaceID, assetID string) (*Asset, error) {
 	path := fmt.Sprintf("/spaces/%s/assets/%s", spaceID, assetID)
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -114,7 +115,7 @@ func (service *AssetsService) Get(spaceID, assetID string) (*Asset, error) {
 }
 
 // Upsert updates or creates a new asset entity
-func (service *AssetsService) Upsert(spaceID string, asset *Asset) error {
+func (service *AssetsService) Upsert(ctx context.Context, spaceID string, asset *Asset) error {
 	bytesArray, err := json.Marshal(asset)
 	if err != nil {
 		return err
@@ -131,7 +132,7 @@ func (service *AssetsService) Upsert(spaceID string, asset *Asset) error {
 		method = "POST"
 	}
 
-	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	req, err := service.c.newRequest(ctx, method, path, nil, bytes.NewReader(bytesArray))
 	if err != nil {
 		return err
 	}
@@ -142,11 +143,11 @@ func (service *AssetsService) Upsert(spaceID string, asset *Asset) error {
 }
 
 // Delete sends delete request
-func (service *AssetsService) Delete(spaceID string, asset *Asset) error {
+func (service *AssetsService) Delete(ctx context.Context, spaceID string, asset *Asset) error {
 	path := fmt.Sprintf("/spaces/%s/assets/%s", spaceID, asset.Sys.ID)
 	method := "DELETE"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -158,11 +159,11 @@ func (service *AssetsService) Delete(spaceID string, asset *Asset) error {
 }
 
 // Process the asset
-func (service *AssetsService) Process(spaceID string, asset *Asset) error {
+func (service *AssetsService) Process(ctx context.Context, spaceID string, asset *Asset) error {
 	path := fmt.Sprintf("/spaces/%s/assets/%s/files/%s/process", spaceID, asset.Sys.ID, asset.Locale)
 	method := "PUT"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -174,11 +175,11 @@ func (service *AssetsService) Process(spaceID string, asset *Asset) error {
 }
 
 // Publish published the asset
-func (service *AssetsService) Publish(spaceID string, asset *Asset) error {
+func (service *AssetsService) Publish(ctx context.Context, spaceID string, asset *Asset) error {
 	path := fmt.Sprintf("/spaces/%s/assets/%s/published", spaceID, asset.Sys.ID)
 	method := "PUT"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -190,11 +191,11 @@ func (service *AssetsService) Publish(spaceID string, asset *Asset) error {
 }
 
 // Unpublish the asset
-func (service *AssetsService) Unpublish(spaceID string, asset *Asset) error {
+func (service *AssetsService) Unpublish(ctx context.Context, spaceID string, asset *Asset) error {
 	path := fmt.Sprintf("/spaces/%s/assets/%s/published", spaceID, asset.Sys.ID)
 	method := "DELETE"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -206,11 +207,11 @@ func (service *AssetsService) Unpublish(spaceID string, asset *Asset) error {
 }
 
 // Archive archives the asset
-func (service *AssetsService) Archive(spaceID string, asset *Asset) error {
+func (service *AssetsService) Archive(ctx context.Context, spaceID string, asset *Asset) error {
 	path := fmt.Sprintf("/spaces/%s/assets/%s/archived", spaceID, asset.Sys.ID)
 	method := "PUT"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -222,11 +223,11 @@ func (service *AssetsService) Archive(spaceID string, asset *Asset) error {
 }
 
 // Unarchive unarchives the asset
-func (service *AssetsService) Unarchive(spaceID string, asset *Asset) error {
+func (service *AssetsService) Unarchive(ctx context.Context, spaceID string, asset *Asset) error {
 	path := fmt.Sprintf("/spaces/%s/assets/%s/archived", spaceID, asset.Sys.ID)
 	method := "DELETE"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}

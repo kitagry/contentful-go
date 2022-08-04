@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -30,11 +31,11 @@ func (accessToken *AccessToken) GetVersion() int {
 }
 
 // List returns an access tokens collection
-func (service *AccessTokensService) List() *Collection {
+func (service *AccessTokensService) List(ctx context.Context) *Collection {
 	path := fmt.Sprint("/users/me/access_tokens")
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return &Collection{}
 	}
@@ -47,12 +48,12 @@ func (service *AccessTokensService) List() *Collection {
 }
 
 // Get returns a single access token
-func (service *AccessTokensService) Get(accessTokenID string) (*AccessToken, error) {
+func (service *AccessTokensService) Get(ctx context.Context, accessTokenID string) (*AccessToken, error) {
 	path := fmt.Sprintf("/users/me/access_tokens/%s", accessTokenID)
 	query := url.Values{}
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, query, nil)
+	req, err := service.c.newRequest(ctx, method, path, query, nil)
 	if err != nil {
 		return &AccessToken{}, err
 	}
@@ -67,17 +68,15 @@ func (service *AccessTokensService) Get(accessTokenID string) (*AccessToken, err
 }
 
 // Create creates a new access token
-func (service *AccessTokensService) Create(accessToken *AccessToken) error {
+func (service *AccessTokensService) Create(ctx context.Context, accessToken *AccessToken) error {
 	bytesArray, err := json.Marshal(accessToken)
-
 	if err != nil {
 		return err
 	}
 
 	path := fmt.Sprint("/users/me/access_tokens")
 	method := "POST"
-	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
-
+	req, err := service.c.newRequest(ctx, method, path, nil, bytes.NewReader(bytesArray))
 	if err != nil {
 		return err
 	}
@@ -87,7 +86,7 @@ func (service *AccessTokensService) Create(accessToken *AccessToken) error {
 }
 
 // Revoke revokes a personal access token
-func (service *AccessTokensService) Revoke(accessToken *AccessToken) error {
+func (service *AccessTokensService) Revoke(ctx context.Context, accessToken *AccessToken) error {
 	bytesArray, err := json.Marshal(accessToken)
 	if err != nil {
 		return err
@@ -101,7 +100,7 @@ func (service *AccessTokensService) Revoke(accessToken *AccessToken) error {
 		method = "PUT"
 	}
 
-	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	req, err := service.c.newRequest(ctx, method, path, nil, bytes.NewReader(bytesArray))
 	if err != nil {
 		return err
 	}

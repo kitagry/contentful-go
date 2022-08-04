@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -32,11 +33,11 @@ func (environmentAlias *EnvironmentAlias) GetVersion() int {
 }
 
 // List returns an environment aliases collection
-func (service *EnvironmentAliasesService) List(spaceID string) *Collection {
+func (service *EnvironmentAliasesService) List(ctx context.Context, spaceID string) *Collection {
 	path := fmt.Sprintf("/spaces/%s/environment_aliases", spaceID)
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return nil
 	}
@@ -49,11 +50,11 @@ func (service *EnvironmentAliasesService) List(spaceID string) *Collection {
 }
 
 // Get returns a single environment alias entity
-func (service *EnvironmentAliasesService) Get(spaceID, environmentAliasID string) (*EnvironmentAlias, error) {
+func (service *EnvironmentAliasesService) Get(ctx context.Context, spaceID, environmentAliasID string) (*EnvironmentAlias, error) {
 	path := fmt.Sprintf("/spaces/%s/environment_aliases/%s", spaceID, environmentAliasID)
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +68,7 @@ func (service *EnvironmentAliasesService) Get(spaceID, environmentAliasID string
 }
 
 // Update updates an environment alias
-func (service *EnvironmentAliasesService) Update(spaceID string, ea *EnvironmentAlias) error {
+func (service *EnvironmentAliasesService) Update(ctx context.Context, spaceID string, ea *EnvironmentAlias) error {
 	bytesArray, err := json.Marshal(ea)
 	if err != nil {
 		return err
@@ -81,7 +82,7 @@ func (service *EnvironmentAliasesService) Update(spaceID string, ea *Environment
 		method = "PUT"
 	}
 
-	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	req, err := service.c.newRequest(ctx, method, path, nil, bytes.NewReader(bytesArray))
 	if err != nil {
 		return err
 	}

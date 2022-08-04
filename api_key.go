@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -59,11 +60,11 @@ func (apiKey *APIKey) GetVersion() int {
 }
 
 // List returns all api keys collection
-func (service *APIKeyService) List(spaceID string) *Collection {
+func (service *APIKeyService) List(ctx context.Context, spaceID string) *Collection {
 	path := fmt.Sprintf("/spaces/%s/api_keys", spaceID)
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return &Collection{}
 	}
@@ -76,11 +77,11 @@ func (service *APIKeyService) List(spaceID string) *Collection {
 }
 
 // Get returns a single api key entity
-func (service *APIKeyService) Get(spaceID, apiKeyID string) (*APIKey, error) {
+func (service *APIKeyService) Get(ctx context.Context, spaceID, apiKeyID string) (*APIKey, error) {
 	path := fmt.Sprintf("/spaces/%s/api_keys/%s", spaceID, apiKeyID)
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +95,7 @@ func (service *APIKeyService) Get(spaceID, apiKeyID string) (*APIKey, error) {
 }
 
 // Upsert updates or creates a new api key entity
-func (service *APIKeyService) Upsert(spaceID string, apiKey *APIKey) error {
+func (service *APIKeyService) Upsert(ctx context.Context, spaceID string, apiKey *APIKey) error {
 	bytesArray, err := json.Marshal(apiKey)
 	if err != nil {
 		return err
@@ -111,7 +112,7 @@ func (service *APIKeyService) Upsert(spaceID string, apiKey *APIKey) error {
 		method = "POST"
 	}
 
-	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	req, err := service.c.newRequest(ctx, method, path, nil, bytes.NewReader(bytesArray))
 	if err != nil {
 		return err
 	}
@@ -122,11 +123,11 @@ func (service *APIKeyService) Upsert(spaceID string, apiKey *APIKey) error {
 }
 
 // Delete deletes a sinlge api key entity
-func (service *APIKeyService) Delete(spaceID string, apiKey *APIKey) error {
+func (service *APIKeyService) Delete(ctx context.Context, spaceID string, apiKey *APIKey) error {
 	path := fmt.Sprintf("/spaces/%s/api_keys/%s", spaceID, apiKey.Sys.ID)
 	method := "DELETE"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}

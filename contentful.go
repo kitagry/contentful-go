@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -189,7 +190,7 @@ func (c *Client) SetHTTPClient(client *http.Client) {
 	c.client = client
 }
 
-func (c *Client) newRequest(method, path string, query url.Values, body io.Reader) (*http.Request, error) {
+func (c *Client) newRequest(ctx context.Context, method, path string, query url.Values, body io.Reader) (*http.Request, error) {
 	u, err := url.Parse(c.BaseURL)
 	if err != nil {
 		return nil, err
@@ -203,7 +204,7 @@ func (c *Client) newRequest(method, path string, query url.Values, body io.Reade
 	u.Path = path
 	u.RawQuery = query.Encode()
 
-	req, err := http.NewRequest(method, u.String(), body)
+	req, err := http.NewRequestWithContext(ctx, method, u.String(), body)
 	if err != nil {
 		return nil, err
 	}

@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -32,7 +33,7 @@ func TestExtensionsService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.Extensions.List(env).Next()
+	collection, err := cma.Extensions.List(context.Background(), env).Next()
 	assertions.Nil(err)
 
 	extensions := collection.ToExtension()
@@ -63,7 +64,7 @@ func TestExtensionsService_Get(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	extension, err := cma.Extensions.Get(env, "0xvkPW9FdQ1kkWlWZ8ga4x")
+	extension, err := cma.Extensions.Get(context.Background(), env, "0xvkPW9FdQ1kkWlWZ8ga4x")
 	assertions.Nil(err)
 	assertions.Equal("0xvkPW9FdQ1kkWlWZ8ga4x", extension.Sys.ID)
 }
@@ -90,7 +91,7 @@ func TestExtensionsService_Get_2(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Extensions.Get(env, "0xvkPW9FdQ1kkWlWZ8ga4x")
+	_, err = cma.Extensions.Get(context.Background(), env, "0xvkPW9FdQ1kkWlWZ8ga4x")
 	assertions.Nil(err)
 }
 
@@ -137,7 +138,7 @@ func TestExtensionsService_Upsert_Create(t *testing.T) {
 		},
 	}
 
-	err := cma.Extensions.Upsert(env, extension)
+	err := cma.Extensions.Upsert(context.Background(), env, extension)
 	assertions.Nil(err)
 	assertions.Equal("https://example.com/my", extension.Extension.SRC)
 	assertions.Equal("My awesome extension", extension.Extension.Name)
@@ -176,7 +177,7 @@ func TestExtensionsService_Upsert_Update(t *testing.T) {
 
 	extension.Extension.Name = "The updated extension"
 
-	err = cma.Extensions.Upsert(env, extension)
+	err = cma.Extensions.Upsert(context.Background(), env, extension)
 	assertions.Nil(err)
 	assertions.Equal("The updated extension", extension.Extension.Name)
 }
@@ -204,6 +205,6 @@ func TestExtensionsService_Delete(t *testing.T) {
 	extension, err := extensionFromTestFile("extension_1.json")
 	assertions.Nil(err)
 
-	err = cma.Extensions.Delete(env, extension.Sys.ID)
+	err = cma.Extensions.Delete(context.Background(), env, extension.Sys.ID)
 	assertions.Nil(err)
 }

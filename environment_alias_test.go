@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -32,7 +33,7 @@ func TestEnvironmentAliasesServices_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.EnvironmentAliases.List(spaceID).Next()
+	collection, err := cma.EnvironmentAliases.List(context.Background(), spaceID).Next()
 	assertions.Nil(err)
 	environmentAlias := collection.ToEnvironmentAlias()
 	assertions.Equal(1, len(environmentAlias))
@@ -62,7 +63,7 @@ func TestEnvironmentAliasesServices_Get(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	environmentAlias, err := cma.EnvironmentAliases.Get(spaceID, "master")
+	environmentAlias, err := cma.EnvironmentAliases.Get(context.Background(), spaceID, "master")
 	assertions.Nil(err)
 	assertions.Equal("master-18-3-2020", environmentAlias.Alias.Sys.ID)
 }
@@ -90,7 +91,7 @@ func TestEnvironmentAliasesServices_Get_2(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.EnvironmentAliases.Get(spaceID, "master")
+	_, err = cma.EnvironmentAliases.Get(context.Background(), spaceID, "master")
 	assertions.NotNil(err)
 }
 
@@ -126,6 +127,6 @@ func TestEnvironmentAliasesService_Update(t *testing.T) {
 
 	environmentAlias.Alias.Sys.ID = "staging"
 
-	err = cma.EnvironmentAliases.Update(spaceID, environmentAlias)
+	err = cma.EnvironmentAliases.Update(context.Background(), spaceID, environmentAlias)
 	assertions.Nil(err)
 }

@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -311,11 +312,11 @@ func (ct *ContentType) GetVersion() int {
 }
 
 // List return a content type collection
-func (service *ContentTypesService) List(env *Environment) *Collection {
+func (service *ContentTypesService) List(ctx context.Context, env *Environment) *Collection {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/content_types", env.Sys.Space.Sys.ID, env.Sys.ID)
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return nil
 	}
@@ -328,11 +329,11 @@ func (service *ContentTypesService) List(env *Environment) *Collection {
 }
 
 // ListActivated return a content type collection, with only activated content types
-func (service *ContentTypesService) ListActivated(env *Environment) *Collection {
+func (service *ContentTypesService) ListActivated(ctx context.Context, env *Environment) *Collection {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/public/content_types", env.Sys.Space.Sys.ID, env.Sys.ID)
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return nil
 	}
@@ -345,10 +346,10 @@ func (service *ContentTypesService) ListActivated(env *Environment) *Collection 
 }
 
 // Get a content type by `contentTypeID` from an environment
-func (service *ContentTypesService) Get(env *Environment, contentTypeID string) (*ContentType, error) {
+func (service *ContentTypesService) Get(ctx context.Context, env *Environment, contentTypeID string) (*ContentType, error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/content_types/%s", env.Sys.Space.Sys.ID, env.Sys.ID, contentTypeID)
 
-	req, err := service.c.newRequest("GET", path, nil, nil)
+	req, err := service.c.newRequest(ctx, "GET", path, nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -362,7 +363,7 @@ func (service *ContentTypesService) Get(env *Environment, contentTypeID string) 
 }
 
 // Upsert a content type to the specified environment
-func (service *ContentTypesService) Upsert(env *Environment, ct *ContentType) error {
+func (service *ContentTypesService) Upsert(ctx context.Context, env *Environment, ct *ContentType) error {
 	var path string
 	var method string
 
@@ -381,7 +382,7 @@ func (service *ContentTypesService) Upsert(env *Environment, ct *ContentType) er
 		return err
 	}
 
-	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	req, err := service.c.newRequest(ctx, method, path, nil, bytes.NewReader(bytesArray))
 	if err != nil {
 		return err
 	}
@@ -392,12 +393,12 @@ func (service *ContentTypesService) Upsert(env *Environment, ct *ContentType) er
 }
 
 // Delete a content type from an environment
-func (service *ContentTypesService) Delete(env *Environment, ct *ContentType) error {
+func (service *ContentTypesService) Delete(ctx context.Context, env *Environment, ct *ContentType) error {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/content_types/%s", env.Sys.Space.Sys.ID, env.Sys.ID, ct.Sys.ID)
 
 	method := "DELETE"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -409,12 +410,12 @@ func (service *ContentTypesService) Delete(env *Environment, ct *ContentType) er
 }
 
 // Activate activate a content type for a specified environment
-func (service *ContentTypesService) Activate(env *Environment, ct *ContentType) error {
+func (service *ContentTypesService) Activate(ctx context.Context, env *Environment, ct *ContentType) error {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/content_types/%s/published", env.Sys.Space.Sys.ID, env.Sys.ID, ct.Sys.ID)
 
 	method := "PUT"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -426,12 +427,12 @@ func (service *ContentTypesService) Activate(env *Environment, ct *ContentType) 
 }
 
 // Deactivate deactivate a contenttype for a specified environment
-func (service *ContentTypesService) Deactivate(env *Environment, ct *ContentType) error {
+func (service *ContentTypesService) Deactivate(ctx context.Context, env *Environment, ct *ContentType) error {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/content_types/%s/published", env.Sys.Space.Sys.ID, env.Sys.ID, ct.Sys.ID)
 
 	method := "DELETE"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}

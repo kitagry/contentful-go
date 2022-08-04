@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -32,7 +33,7 @@ func TestEntriesService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.Entries.List(env).Next()
+	collection, err := cma.Entries.List(context.Background(), env).Next()
 	assertions.Nil(err)
 	entry := collection.ToEntry()
 	assertions.Equal("5KsDBWseXY6QegucYAoacS", entry[0].Sys.ID)
@@ -60,7 +61,7 @@ func TestEntriesService_Get(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	entry, err := cma.Entries.Get(env, "5KsDBWseXY6QegucYAoacS")
+	entry, err := cma.Entries.Get(context.Background(), env, "5KsDBWseXY6QegucYAoacS")
 	assertions.Nil(err)
 	assertions.Equal("5KsDBWseXY6QegucYAoacS", entry.Sys.ID)
 }
@@ -87,7 +88,7 @@ func TestEntriesService_Get_2(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Entries.Get(env, "5KsDBWseXY6QegucYAoacS")
+	_, err = cma.Entries.Get(context.Background(), env, "5KsDBWseXY6QegucYAoacS")
 	assertions.Nil(err)
 }
 
@@ -116,7 +117,7 @@ func TestEntriesService_Delete(t *testing.T) {
 	assertions.Nil(err)
 
 	// delete locale
-	err = cma.Entries.Delete(env, entry.Sys.ID)
+	err = cma.Entries.Delete(context.Background(), env, entry.Sys.ID)
 	assertions.Nil(err)
 }
 
@@ -164,7 +165,7 @@ func TestEntriesService_Upsert_Create(t *testing.T) {
 		},
 	}
 
-	err = cma.Entries.Upsert(env, "hfM9RCJIk0wIm06WkEOQY", entry)
+	err = cma.Entries.Upsert(context.Background(), env, "hfM9RCJIk0wIm06WkEOQY", entry)
 	assertions.Nil(err)
 }
 
@@ -206,7 +207,7 @@ func TestEntriesService_Upsert_Update(t *testing.T) {
 	body := entry.Fields["body"].(map[string]interface{})
 	body["en-US"] = "Edited text"
 
-	err = cma.Entries.Upsert(env, "hfM9RCJIk0wIm06WkEOQY", entry)
+	err = cma.Entries.Upsert(context.Background(), env, "hfM9RCJIk0wIm06WkEOQY", entry)
 	assertions.Nil(err)
 }
 
@@ -236,7 +237,7 @@ func TestEntriesService_Publish(t *testing.T) {
 	e, err := entryFromTestData("entry_1.json")
 	assertions.Nil(err)
 
-	err = cma.Entries.Publish(env, e)
+	err = cma.Entries.Publish(context.Background(), env, e)
 	assertions.Nil(err)
 }
 
@@ -266,7 +267,7 @@ func TestEntriesService_Unpublish(t *testing.T) {
 	e, err := entryFromTestData("entry_1.json")
 	assertions.Nil(err)
 
-	err = cma.Entries.Unpublish(env, e)
+	err = cma.Entries.Unpublish(context.Background(), env, e)
 	assertions.Nil(err)
 }
 
@@ -296,7 +297,7 @@ func TestEntriesService_Archive(t *testing.T) {
 	e, err := entryFromTestData("entry_1.json")
 	assertions.Nil(err)
 
-	err = cma.Entries.Archive(env, e)
+	err = cma.Entries.Archive(context.Background(), env, e)
 	assertions.Nil(err)
 }
 
@@ -326,6 +327,6 @@ func TestEntriesService_Unarchive(t *testing.T) {
 	e, err := entryFromTestData("entry_1.json")
 	assertions.Nil(err)
 
-	err = cma.Entries.Unarchive(env, e)
+	err = cma.Entries.Unarchive(context.Background(), env, e)
 	assertions.Nil(err)
 }

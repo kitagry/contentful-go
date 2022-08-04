@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -42,10 +43,10 @@ func (membership *Membership) GetVersion() int {
 }
 
 // List returns membership collection
-func (service *MembershipsService) List(spaceID string) *Collection {
+func (service *MembershipsService) List(ctx context.Context, spaceID string) *Collection {
 	path := fmt.Sprintf("/spaces/%s/space_memberships", spaceID)
 
-	req, err := service.c.newRequest(http.MethodGet, path, nil, nil)
+	req, err := service.c.newRequest(ctx, http.MethodGet, path, nil, nil)
 	if err != nil {
 		return &Collection{}
 	}
@@ -58,12 +59,12 @@ func (service *MembershipsService) List(spaceID string) *Collection {
 }
 
 // Get returns a single membership
-func (service *MembershipsService) Get(spaceID, membershipID string) (*Membership, error) {
+func (service *MembershipsService) Get(ctx context.Context, spaceID, membershipID string) (*Membership, error) {
 	path := fmt.Sprintf("/spaces/%s/space_memberships/%s", spaceID, membershipID)
 	query := url.Values{}
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, query, nil)
+	req, err := service.c.newRequest(ctx, method, path, query, nil)
 	if err != nil {
 		return &Membership{}, err
 	}
@@ -77,7 +78,7 @@ func (service *MembershipsService) Get(spaceID, membershipID string) (*Membershi
 }
 
 // Upsert updates or creates a new membership
-func (service *MembershipsService) Upsert(spaceID string, m *Membership) error {
+func (service *MembershipsService) Upsert(ctx context.Context, spaceID string, m *Membership) error {
 	bytesArray, err := json.Marshal(m)
 	if err != nil {
 		return err
@@ -94,7 +95,7 @@ func (service *MembershipsService) Upsert(spaceID string, m *Membership) error {
 		method = "POST"
 	}
 
-	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	req, err := service.c.newRequest(ctx, method, path, nil, bytes.NewReader(bytesArray))
 	if err != nil {
 		return err
 	}
@@ -105,11 +106,11 @@ func (service *MembershipsService) Upsert(spaceID string, m *Membership) error {
 }
 
 // Delete the role
-func (service *MembershipsService) Delete(spaceID string, membershipID string) error {
+func (service *MembershipsService) Delete(ctx context.Context, spaceID string, membershipID string) error {
 	path := fmt.Sprintf("/spaces/%s/space_memberships/%s", spaceID, membershipID)
 	method := "DELETE"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}

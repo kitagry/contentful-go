@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -12,7 +13,7 @@ import (
 // EntriesService service
 type EntriesService service
 
-//Entry model
+// Entry model
 type Entry struct {
 	Locale string                 `json:"locale"`
 	Sys    *Sys                   `json:"sys"`
@@ -30,10 +31,10 @@ func (entry *Entry) GetVersion() int {
 }
 
 // List returns entries collection
-func (service *EntriesService) List(env *Environment) *Collection {
+func (service *EntriesService) List(ctx context.Context, env *Environment) *Collection {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/entries", env.Sys.Space.Sys.ID, env.Sys.ID)
 
-	req, err := service.c.newRequest(http.MethodGet, path, nil, nil)
+	req, err := service.c.newRequest(ctx, http.MethodGet, path, nil, nil)
 	if err != nil {
 		return &Collection{}
 	}
@@ -46,12 +47,12 @@ func (service *EntriesService) List(env *Environment) *Collection {
 }
 
 // Get returns a single entry
-func (service *EntriesService) Get(env *Environment, entryID string) (*Entry, error) {
+func (service *EntriesService) Get(ctx context.Context, env *Environment, entryID string) (*Entry, error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s", env.Sys.Space.Sys.ID, env.Sys.ID, entryID)
 	query := url.Values{}
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, query, nil)
+	req, err := service.c.newRequest(ctx, method, path, query, nil)
 	if err != nil {
 		return &Entry{}, err
 	}
@@ -65,11 +66,11 @@ func (service *EntriesService) Get(env *Environment, entryID string) (*Entry, er
 }
 
 // Delete the entry
-func (service *EntriesService) Delete(env *Environment, entryID string) error {
+func (service *EntriesService) Delete(ctx context.Context, env *Environment, entryID string) error {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s", env.Sys.Space.Sys.ID, env.Sys.ID, entryID)
 	method := "DELETE"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -78,11 +79,11 @@ func (service *EntriesService) Delete(env *Environment, entryID string) error {
 }
 
 // Publish the entry
-func (service *EntriesService) Publish(env *Environment, entry *Entry) error {
+func (service *EntriesService) Publish(ctx context.Context, env *Environment, entry *Entry) error {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/published", env.Sys.Space.Sys.ID, env.Sys.ID, entry.Sys.ID)
 	method := "PUT"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -94,11 +95,11 @@ func (service *EntriesService) Publish(env *Environment, entry *Entry) error {
 }
 
 // Unpublish the entry
-func (service *EntriesService) Unpublish(env *Environment, entry *Entry) error {
+func (service *EntriesService) Unpublish(ctx context.Context, env *Environment, entry *Entry) error {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/published", env.Sys.Space.Sys.ID, env.Sys.ID, entry.Sys.ID)
 	method := "DELETE"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -110,7 +111,7 @@ func (service *EntriesService) Unpublish(env *Environment, entry *Entry) error {
 }
 
 // Upsert updates or creates a new entry
-func (service *EntriesService) Upsert(env *Environment, contentTypeID string, e *Entry) error {
+func (service *EntriesService) Upsert(ctx context.Context, env *Environment, contentTypeID string, e *Entry) error {
 	bytesArray, err := json.Marshal(e)
 	if err != nil {
 		return err
@@ -127,7 +128,7 @@ func (service *EntriesService) Upsert(env *Environment, contentTypeID string, e 
 		method = "POST"
 	}
 
-	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	req, err := service.c.newRequest(ctx, method, path, nil, bytes.NewReader(bytesArray))
 	if err != nil {
 		return err
 	}
@@ -139,11 +140,11 @@ func (service *EntriesService) Upsert(env *Environment, contentTypeID string, e 
 }
 
 // Archive the entry
-func (service *EntriesService) Archive(env *Environment, entry *Entry) error {
+func (service *EntriesService) Archive(ctx context.Context, env *Environment, entry *Entry) error {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/archived", env.Sys.Space.Sys.ID, env.Sys.ID, entry.Sys.ID)
 	method := "PUT"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -155,11 +156,11 @@ func (service *EntriesService) Archive(env *Environment, entry *Entry) error {
 }
 
 // Unarchive the entry
-func (service *EntriesService) Unarchive(env *Environment, entry *Entry) error {
+func (service *EntriesService) Unarchive(ctx context.Context, env *Environment, entry *Entry) error {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/archived", env.Sys.Space.Sys.ID, env.Sys.ID, entry.Sys.ID)
 	method := "DELETE"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}

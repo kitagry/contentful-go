@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -41,10 +42,10 @@ func (scheduledAction *ScheduledAction) GetVersion() int {
 }
 
 // List returns scheduled actions collection
-func (service *ScheduledActionsService) List(spaceID, entryID string) *Collection {
+func (service *ScheduledActionsService) List(ctx context.Context, spaceID, entryID string) *Collection {
 	path := fmt.Sprintf("/spaces/%s/scheduled_actions?entity.sys.id=%s&environment.sys.id=%s", spaceID, entryID, service.c.Environment)
 
-	req, err := service.c.newRequest(http.MethodGet, path, nil, nil)
+	req, err := service.c.newRequest(ctx, http.MethodGet, path, nil, nil)
 	if err != nil {
 		return &Collection{}
 	}
@@ -57,11 +58,11 @@ func (service *ScheduledActionsService) List(spaceID, entryID string) *Collectio
 }
 
 // Delete the scheduled action
-func (service *ScheduledActionsService) Delete(spaceID, entryID, scheduledActionID string) error {
+func (service *ScheduledActionsService) Delete(ctx context.Context, spaceID, entryID, scheduledActionID string) error {
 	path := fmt.Sprintf("/spaces/%s/scheduled_actions/%s?entity.sys.id=%s&environment.sys.id=%s", spaceID, scheduledActionID, entryID, service.c.Environment)
 	method := "DELETE"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -70,7 +71,7 @@ func (service *ScheduledActionsService) Delete(spaceID, entryID, scheduledAction
 }
 
 // Create creates a new scheduled actions
-func (service *ScheduledActionsService) Create(spaceID, entryID string, scheduledAction *ScheduledAction) error {
+func (service *ScheduledActionsService) Create(ctx context.Context, spaceID, entryID string, scheduledAction *ScheduledAction) error {
 	bytesArray, err := json.Marshal(scheduledAction)
 	if err != nil {
 		return err
@@ -78,7 +79,7 @@ func (service *ScheduledActionsService) Create(spaceID, entryID string, schedule
 	path := fmt.Sprintf("/spaces/%s/scheduled_actions?entity.sys.id=%s&environment.sys.id=%s", spaceID, entryID, service.c.Environment)
 	method := "POST"
 
-	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	req, err := service.c.newRequest(ctx, method, path, nil, bytes.NewReader(bytesArray))
 	if err != nil {
 		return err
 	}

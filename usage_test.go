@@ -1,11 +1,13 @@
 package contentful
 
 import (
+	"context"
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestUsagesService_GetOrganizationUsage(t *testing.T) {
@@ -30,7 +32,7 @@ func TestUsagesService_GetOrganizationUsage(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	res, err := cma.Usages.GetOrganizationUsage("organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03").Next()
+	res, err := cma.Usages.GetOrganizationUsage(context.Background(), "organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03").Next()
 	assertions.Nil(err)
 
 	usage := res.ToUsage()
@@ -61,7 +63,7 @@ func TestUsagesService_GetOrganizationUsage_2(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Usages.GetOrganizationUsage("organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03").Next()
+	_, err = cma.Usages.GetOrganizationUsage(context.Background(), "organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03").Next()
 	assertions.NotNil(err)
 }
 
@@ -87,14 +89,13 @@ func TestUsagesService_GetSpaceUsage(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	res, err := cma.Usages.GetSpaceUsage("organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03").Next()
+	res, err := cma.Usages.GetSpaceUsage(context.Background(), "organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03").Next()
 	assertions.Nil(err)
 
 	usage := res.ToUsage()
 	assertions.Equal(1, len(usage))
 	assertions.Equal("<usage_metric_id>", usage[0].Sys.ID)
 	assertions.Equal("SpacePeriodicUsage", usage[0].Sys.Type)
-
 }
 
 func TestUsagesService_GetSpaceUsage_2(t *testing.T) {
@@ -119,7 +120,6 @@ func TestUsagesService_GetSpaceUsage_2(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Usages.GetSpaceUsage("organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03").Next()
+	_, err = cma.Usages.GetSpaceUsage(context.Background(), "organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03").Next()
 	assertions.NotNil(err)
-
 }

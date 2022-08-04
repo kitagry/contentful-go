@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -27,11 +28,11 @@ func (e *Environment) GetVersion() int {
 }
 
 // List returns an environments collection
-func (service *EnvironmentsService) List(spaceID string) *Collection {
+func (service *EnvironmentsService) List(ctx context.Context, spaceID string) *Collection {
 	path := fmt.Sprintf("/spaces/%s/environments", spaceID)
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return nil
 	}
@@ -44,11 +45,11 @@ func (service *EnvironmentsService) List(spaceID string) *Collection {
 }
 
 // Get returns a single environment entity
-func (service *EnvironmentsService) Get(spaceID, environmentID string) (*Environment, error) {
+func (service *EnvironmentsService) Get(ctx context.Context, spaceID, environmentID string) (*Environment, error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s", spaceID, environmentID)
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +63,7 @@ func (service *EnvironmentsService) Get(spaceID, environmentID string) (*Environ
 }
 
 // Upsert updates or creates a new environment
-func (service *EnvironmentsService) Upsert(spaceID string, e *Environment) error {
+func (service *EnvironmentsService) Upsert(ctx context.Context, spaceID string, e *Environment) error {
 	bytesArray, err := json.Marshal(e)
 	if err != nil {
 		return err
@@ -79,7 +80,7 @@ func (service *EnvironmentsService) Upsert(spaceID string, e *Environment) error
 		method = "PUT"
 	}
 
-	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	req, err := service.c.newRequest(ctx, method, path, nil, bytes.NewReader(bytesArray))
 	if err != nil {
 		return err
 	}
@@ -90,11 +91,11 @@ func (service *EnvironmentsService) Upsert(spaceID string, e *Environment) error
 }
 
 // Delete the environment
-func (service *EnvironmentsService) Delete(spaceID string, e *Environment) error {
+func (service *EnvironmentsService) Delete(ctx context.Context, spaceID string, e *Environment) error {
 	path := fmt.Sprintf("/spaces/%s/environments/%s", spaceID, e.Sys.ID)
 	method := "DELETE"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}

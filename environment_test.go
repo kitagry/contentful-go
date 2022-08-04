@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -32,7 +33,7 @@ func TestEnvironmentsService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.Environments.List(spaceID).Next()
+	collection, err := cma.Environments.List(context.Background(), spaceID).Next()
 	assertions.Nil(err)
 	environment := collection.ToEnvironment()
 	assertions.Equal(1, len(environment))
@@ -61,7 +62,7 @@ func TestEnvironmentsService_Get(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	environment, err := cma.Environments.Get(spaceID, "staging")
+	environment, err := cma.Environments.Get(context.Background(), spaceID, "staging")
 	assertions.Nil(err)
 	assertions.Equal("staging", environment.Name)
 }
@@ -89,7 +90,7 @@ func TestEnvironmentsService_Get_2(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Environments.Get(spaceID, "master")
+	_, err = cma.Environments.Get(context.Background(), spaceID, "master")
 	assertions.NotNil(err)
 }
 
@@ -124,7 +125,7 @@ func TestEnvironmentsService_Upsert_Create(t *testing.T) {
 		Name: "staging",
 	}
 
-	err = cma.Environments.Upsert(spaceID, environment)
+	err = cma.Environments.Upsert(context.Background(), spaceID, environment)
 	assertions.Nil(err)
 }
 
@@ -160,7 +161,7 @@ func TestEnvironmentsService_Upsert_Update(t *testing.T) {
 
 	environment.Name = "modified-name"
 
-	err = cma.Environments.Upsert(spaceID, environment)
+	err = cma.Environments.Upsert(context.Background(), spaceID, environment)
 	assertions.Nil(err)
 }
 
@@ -189,6 +190,6 @@ func TestEnvironmentsService_Delete(t *testing.T) {
 	assertions.Nil(err)
 
 	// delete environment
-	err = cma.Environments.Delete(spaceID, environment)
+	err = cma.Environments.Delete(context.Background(), spaceID, environment)
 	assertions.Nil(err)
 }

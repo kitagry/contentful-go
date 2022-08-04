@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -32,7 +33,7 @@ func TestAccessTokensServiceList(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.AccessTokens.List().Next()
+	collection, err := cma.AccessTokens.List(context.Background()).Next()
 	assertions.Nil(err)
 	keys := collection.ToAccessToken()
 	assertions.Equal(2, len(keys))
@@ -61,7 +62,7 @@ func TestAccessTokensServiceGet(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	key, err := cma.AccessTokens.Get("hioj6879UYGIfyt654tyfFHG")
+	key, err := cma.AccessTokens.Get(context.Background(), "hioj6879UYGIfyt654tyfFHG")
 	assertions.Nil(err)
 	assertions.Equal("hioj6879UYGIfyt654tyfFHG", key.Sys.ID)
 }
@@ -88,7 +89,7 @@ func TestAccessTokensServiceGet_2(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.AccessTokens.Get("hioj6879UYGIfyt654tyfFHG")
+	_, err = cma.AccessTokens.Get(context.Background(), "hioj6879UYGIfyt654tyfFHG")
 	assertions.Nil(err)
 }
 
@@ -132,7 +133,7 @@ func TestEntriesServiceCreate(t *testing.T) {
 		},
 	}
 
-	err = cma.AccessTokens.Create(accessToken)
+	err = cma.AccessTokens.Create(context.Background(), accessToken)
 	assertions.Nil(err)
 }
 
@@ -168,7 +169,7 @@ func TestAccessTokensService_Revoke(t *testing.T) {
 
 	accessToken.RevokedAt = "2020-03-25T14:40:24Z"
 
-	err = cma.AccessTokens.Revoke(accessToken)
+	err = cma.AccessTokens.Revoke(context.Background(), accessToken)
 	assertions.Nil(err)
 	assertions.Equal(2, accessToken.Sys.Version)
 	assertions.Equal(2, accessToken.GetVersion())

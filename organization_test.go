@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -31,7 +32,7 @@ func TestOrganizationsService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.Organizations.List().Next()
+	collection, err := cma.Organizations.List(context.Background()).Next()
 	assertions.Nil(err)
 	organization := collection.ToOrganization()
 	assertions.Equal(1, len(organization))

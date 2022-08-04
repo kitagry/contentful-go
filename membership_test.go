@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -32,7 +33,7 @@ func TestMembershipsService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.Memberships.List(spaceID).Next()
+	collection, err := cma.Memberships.List(context.Background(), spaceID).Next()
 	assertions.Nil(err)
 	membership := collection.ToMembership()
 	assertions.Equal(2, len(membership))
@@ -61,7 +62,7 @@ func TestMembershipsService_Get(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	membership, err := cma.Memberships.Get(spaceID, "0xWanD4AZI2AR35wW9q51n")
+	membership, err := cma.Memberships.Get(context.Background(), spaceID, "0xWanD4AZI2AR35wW9q51n")
 	assertions.Nil(err)
 	assertions.Equal("0xWanD4AZI2AR35wW9q51n", membership.Sys.ID)
 }
@@ -88,7 +89,7 @@ func TestMembershipsService_Get_2(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Memberships.Get(spaceID, "0xWanD4AZI2AR35wW9q51n")
+	_, err = cma.Memberships.Get(context.Background(), spaceID, "0xWanD4AZI2AR35wW9q51n")
 	assertions.Nil(err)
 }
 
@@ -137,7 +138,7 @@ func TestMembershipsService_Upsert_Create(t *testing.T) {
 		Email: "johndoe@nonexistent.com",
 	}
 
-	err = cma.Memberships.Upsert(spaceID, membership)
+	err = cma.Memberships.Upsert(context.Background(), spaceID, membership)
 	assertions.Nil(err)
 }
 
@@ -175,7 +176,7 @@ func TestMembershipsService_Upsert_Update(t *testing.T) {
 
 	membership.Email = "editedmail@examplemail.com"
 
-	err = cma.Memberships.Upsert(spaceID, membership)
+	err = cma.Memberships.Upsert(context.Background(), spaceID, membership)
 	assertions.Nil(err)
 }
 
@@ -204,6 +205,6 @@ func TestMembershipsService_Delete(t *testing.T) {
 	assertions.Nil(err)
 
 	// delete role
-	err = cma.Memberships.Delete(spaceID, membership.Sys.ID)
+	err = cma.Memberships.Delete(context.Background(), spaceID, membership.Sys.ID)
 	assertions.Nil(err)
 }

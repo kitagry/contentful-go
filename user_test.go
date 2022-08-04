@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -31,7 +32,7 @@ func TestUsersService_Me(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	user, err := cma.Users.Me()
+	user, err := cma.Users.Me(context.Background())
 	assertions.Nil(err)
 	assertions.Equal("j.doe@labdigital.nl", user.Email)
 }
@@ -58,6 +59,6 @@ func TestUsersService_Me_2(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Users.Me()
+	_, err = cma.Users.Me(context.Background())
 	assertions.NotEmpty(err)
 }

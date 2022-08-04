@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -32,7 +33,7 @@ func TestAPIKeyService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	res, err := cma.APIKeys.List(spaceID).Next()
+	res, err := cma.APIKeys.List(context.Background(), spaceID).Next()
 	assertions.Nil(err)
 	keys := res.ToAPIKey()
 	assertions.Equal(1, len(keys))
@@ -61,7 +62,7 @@ func TestAPIKeyService_Get(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	key, err := cma.APIKeys.Get(spaceID, "exampleapikey")
+	key, err := cma.APIKeys.Get(context.Background(), spaceID, "exampleapikey")
 	assertions.Nil(err)
 	assertions.Equal("exampleapikey", key.Sys.ID)
 }
@@ -88,7 +89,7 @@ func TestAPIKeyService_Get_2(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.APIKeys.Get(spaceID, "exampleapikey")
+	_, err = cma.APIKeys.Get(context.Background(), spaceID, "exampleapikey")
 	assertions.NotNil(err)
 }
 
@@ -138,7 +139,7 @@ func TestAPIKeyService_Upsert_Create(t *testing.T) {
 		},
 	}
 
-	err := cma.APIKeys.Upsert(spaceID, key)
+	err := cma.APIKeys.Upsert(context.Background(), spaceID, key)
 	assertions.Nil(err)
 	assertions.Equal("exampleapikey", key.Sys.ID)
 	assertions.Equal("Example API Key", key.Name)
@@ -175,7 +176,7 @@ func TestAPIKeyService_Upsert_Update(t *testing.T) {
 
 	key.Name = "This name is updated"
 
-	err = cma.APIKeys.Upsert(spaceID, key)
+	err = cma.APIKeys.Upsert(context.Background(), spaceID, key)
 	assertions.Nil(err)
 	assertions.Equal("This name is updated", key.Name)
 }
@@ -205,6 +206,6 @@ func TestAPIKeyService_Delete(t *testing.T) {
 	assertions.Nil(err)
 
 	// delete locale
-	err = cma.APIKeys.Delete(spaceID, key)
+	err = cma.APIKeys.Delete(context.Background(), spaceID, key)
 	assertions.Nil(err)
 }

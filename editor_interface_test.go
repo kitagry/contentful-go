@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -32,7 +33,7 @@ func TestEditorInterfacesService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.EditorInterfaces.List(spaceID).Next()
+	collection, err := cma.EditorInterfaces.List(context.Background(), spaceID).Next()
 	assertions.Nil(err)
 
 	interfaces := collection.ToEditorInterface()
@@ -63,7 +64,7 @@ func TestEditorInterfacesService_Get(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	editorInterface, err := cma.EditorInterfaces.Get(spaceID, "hfM9RCJIk0wIm06WkEOQY")
+	editorInterface, err := cma.EditorInterfaces.Get(context.Background(), spaceID, "hfM9RCJIk0wIm06WkEOQY")
 	assertions.Nil(err)
 	assertions.Equal("name", editorInterface.Controls[0].FieldID)
 	assertions.Equal("extension", editorInterface.SideBar[0].WidgetNameSpace)
@@ -91,7 +92,7 @@ func TestEditorInterfacesService_Get_2(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.EditorInterfaces.Get(spaceID, "hfM9RCJIk0wIm06WkEOQY")
+	_, err = cma.EditorInterfaces.Get(context.Background(), spaceID, "hfM9RCJIk0wIm06WkEOQY")
 	assertions.Nil(err)
 }
 
@@ -130,7 +131,7 @@ func TestEditorInterfacesService_Update(t *testing.T) {
 
 	editorInterface.Controls[0].WidgetID = "changed id"
 
-	err = cma.EditorInterfaces.Update(spaceID, "hfM9RCJIk0wIm06WkEOQY", editorInterface)
+	err = cma.EditorInterfaces.Update(context.Background(), spaceID, "hfM9RCJIk0wIm06WkEOQY", editorInterface)
 	assertions.Nil(err)
 	assertions.Equal("changed id", editorInterface.Controls[0].WidgetID)
 }

@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"context"
 	"fmt"
 )
 
@@ -14,11 +15,11 @@ type Organization struct {
 }
 
 // List returns an organizations collection
-func (service *OrganizationsService) List() *Collection {
+func (service *OrganizationsService) List(ctx context.Context) *Collection {
 	path := fmt.Sprintf("/organizations")
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return nil
 	}

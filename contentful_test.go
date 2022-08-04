@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -414,7 +415,7 @@ func TestNewRequest(t *testing.T) {
 	expectedURL.Path = path
 	expectedURL.RawQuery = query.Encode()
 
-	req, err := c.newRequest(method, path, query, nil)
+	req, err := c.newRequest(context.Background(), method, path, query, nil)
 	assertions.Nil(err)
 	assertions.Equal(req.Header.Get("Authorization"), "Bearer "+CMAToken)
 	assertions.Equal(req.Header.Get("Content-Type"), "application/vnd.contentful.management.v1+json")
@@ -431,7 +432,7 @@ func TestNewRequest(t *testing.T) {
 		Age:  10,
 	}
 	body, _ := json.Marshal(bodyData)
-	req, err = c.newRequest(method, path, query, bytes.NewReader(body))
+	req, err = c.newRequest(context.Background(), method, path, query, bytes.NewReader(body))
 	assertions.Nil(err)
 	assertions.Equal(req.Header.Get("Authorization"), "Bearer "+CMAToken)
 	assertions.Equal(req.Header.Get("Content-Type"), "application/vnd.contentful.management.v1+json")
@@ -467,7 +468,7 @@ func TestHandleError(t *testing.T) {
 	errResponseReader := bytes.NewReader(marshaled)
 	errResponseReadCloser := ioutil.NopCloser(errResponseReader)
 
-	req, _ := c.newRequest(method, path, query, nil)
+	req, _ := c.newRequest(context.Background(), method, path, query, nil)
 	responseHeaders := http.Header{}
 	responseHeaders.Add("X-Contentful-Request-Id", requestID)
 	res := &http.Response{
@@ -520,7 +521,7 @@ func TestBackoffForPerSecondLimiting(t *testing.T) {
 		rateLimited = false
 	}()
 
-	space, err := cma.Spaces.Get("id1")
+	space, err := cma.Spaces.Get(context.Background(), "id1")
 	assertions.Nil(err)
 	assertions.Equal(space.Name, "Contentful Example API")
 	assertions.Equal(space.Sys.ID, "id1")

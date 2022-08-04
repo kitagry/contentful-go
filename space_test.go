@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -14,7 +15,7 @@ import (
 func ExampleSpacesService_Get() {
 	cma := NewCMA("cma-token")
 
-	space, err := cma.Spaces.Get("space-id")
+	space, err := cma.Spaces.Get(context.Background(), "space-id")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -24,7 +25,7 @@ func ExampleSpacesService_Get() {
 
 func ExampleSpacesService_List() {
 	cma := NewCMA("cma-token")
-	collection, err := cma.Spaces.List().Next()
+	collection, err := cma.Spaces.List(context.Background()).Next()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -43,7 +44,7 @@ func ExampleSpacesService_Upsert_create() {
 		DefaultLocale: "en-US",
 	}
 
-	err := cma.Spaces.Upsert(space)
+	err := cma.Spaces.Upsert(context.Background(), space)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -52,13 +53,13 @@ func ExampleSpacesService_Upsert_create() {
 func ExampleSpacesService_Upsert_update() {
 	cma := NewCMA("cma-token")
 
-	space, err := cma.Spaces.Get("space-id")
+	space, err := cma.Spaces.Get(context.Background(), "space-id")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	space.Name = "modified"
-	err = cma.Spaces.Upsert(space)
+	err = cma.Spaces.Upsert(context.Background(), space)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -67,12 +68,12 @@ func ExampleSpacesService_Upsert_update() {
 func ExampleSpacesService_Delete() {
 	cma := NewCMA("cma-token")
 
-	space, err := cma.Spaces.Get("space-id")
+	space, err := cma.Spaces.Get(context.Background(), "space-id")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = cma.Spaces.Delete(space)
+	err = cma.Spaces.Delete(context.Background(), space)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -81,13 +82,13 @@ func ExampleSpacesService_Delete() {
 func ExampleSpacesService_Delete_all() {
 	cma := NewCMA("cma-token")
 
-	collection, err := cma.Spaces.List().Next()
+	collection, err := cma.Spaces.List(context.Background()).Next()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	for _, space := range collection.ToSpace() {
-		err := cma.Spaces.Delete(space)
+		err := cma.Spaces.Delete(context.Background(), space)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -116,7 +117,7 @@ func TestSpacesServiceList(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.Spaces.List().Next()
+	collection, err := cma.Spaces.List(context.Background()).Next()
 	assertions.Nil(err)
 
 	spaces := collection.ToSpace()
@@ -157,7 +158,7 @@ func TestSpacesServiceList_Pagination(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.Spaces.List().Next()
+	collection, err := cma.Spaces.List(context.Background()).Next()
 	assertions.Nil(err)
 
 	nextPage, err := collection.Next()
@@ -187,7 +188,7 @@ func TestSpacesServiceGet(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	space, err := cma.Spaces.Get(spaceID)
+	space, err := cma.Spaces.Get(context.Background(), spaceID)
 	assertions.Nil(err)
 	assertions.Equal("id1", space.Sys.ID)
 }
@@ -214,7 +215,7 @@ func TestSpacesService_Get_2(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Spaces.Get(spaceID)
+	_, err = cma.Spaces.Get(context.Background(), spaceID)
 	assertions.NotNil(err)
 }
 
@@ -249,7 +250,7 @@ func TestSpaceSaveForCreate(t *testing.T) {
 		DefaultLocale: "en",
 	}
 
-	err := cma.Spaces.Upsert(space)
+	err := cma.Spaces.Upsert(context.Background(), space)
 	assertions.Nil(err)
 	assertions.Equal("newspace", space.Sys.ID)
 	assertions.Equal("new space", space.Name)
@@ -289,7 +290,7 @@ func TestSpaceSaveForUpdate(t *testing.T) {
 	space.Name = "changed-space-name"
 	space.DefaultLocale = "de"
 
-	err = cma.Spaces.Upsert(space)
+	err = cma.Spaces.Upsert(context.Background(), space)
 	assertions.Nil(err)
 	assertions.Equal("changed-space-name", space.Name)
 	assertions.Equal("de", space.DefaultLocale)
@@ -319,6 +320,6 @@ func TestSpaceDelete(t *testing.T) {
 	space, err := spaceFromTestData("spaces-" + spaceID + ".json")
 	assertions.Nil(err)
 
-	err = cma.Spaces.Delete(space)
+	err = cma.Spaces.Delete(context.Background(), space)
 	assertions.Nil(err)
 }

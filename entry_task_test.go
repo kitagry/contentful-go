@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -32,7 +33,7 @@ func TestEntryTasksService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.EntryTasks.List(env, "5KsDBWseXY6QegucYAoacS").Next()
+	collection, err := cma.EntryTasks.List(context.Background(), env, "5KsDBWseXY6QegucYAoacS").Next()
 	assertions.Nil(err)
 	entryTasks := collection.ToEntryTask()
 	assertions.Equal(1, len(entryTasks))
@@ -61,7 +62,7 @@ func TestEntryTasksService_Get(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	entryTask, err := cma.EntryTasks.Get(env, "5KsDBWseXY6QegucYAoacS", "RHfHVRz3QkAgcMq4CGg2m5")
+	entryTask, err := cma.EntryTasks.Get(context.Background(), env, "5KsDBWseXY6QegucYAoacS", "RHfHVRz3QkAgcMq4CGg2m5")
 	assertions.Nil(err)
 	assertions.Equal("RHfHVRz3QkAgcMq4CGg2m5", entryTask.Sys.ID)
 }
@@ -88,7 +89,7 @@ func TestEntryTasksService_Get_2(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.EntryTasks.Get(env, "5KsDBWseXY6QegucYAoacS", "RHfHVRz3QkAgcMq4CGg2m5")
+	_, err = cma.EntryTasks.Get(context.Background(), env, "5KsDBWseXY6QegucYAoacS", "RHfHVRz3QkAgcMq4CGg2m5")
 	assertions.Nil(err)
 }
 
@@ -115,7 +116,7 @@ func TestEntryTasksService_Delete(t *testing.T) {
 	entryTask, err := spaceFromTestData("entry_task_1.json")
 	assertions.Nil(err)
 
-	err = cma.EntryTasks.Delete(env, "5KsDBWseXY6QegucYAoacS", entryTask.Sys.ID)
+	err = cma.EntryTasks.Delete(context.Background(), env, "5KsDBWseXY6QegucYAoacS", entryTask.Sys.ID)
 	assertions.Nil(err)
 }
 
@@ -157,7 +158,7 @@ func TestEntryTasksService_Upsert_Create(t *testing.T) {
 		},
 	}
 
-	err := cma.EntryTasks.Upsert(env, "5KsDBWseXY6QegucYAoacS", entryTask)
+	err := cma.EntryTasks.Upsert(context.Background(), env, "5KsDBWseXY6QegucYAoacS", entryTask)
 	assertions.Nil(err)
 
 	assertions.Equal("new entry task", entryTask.Body)
@@ -197,7 +198,7 @@ func TestEntryTasksService_Upsert_Update(t *testing.T) {
 	entryTask.Body = "Review translation"
 	entryTask.Status = "active"
 
-	err = cma.EntryTasks.Upsert(env, "5KsDBWseXY6QegucYAoacS", entryTask)
+	err = cma.EntryTasks.Upsert(context.Background(), env, "5KsDBWseXY6QegucYAoacS", entryTask)
 	assertions.Nil(err)
 	assertions.Equal("Review translation", entryTask.Body)
 	assertions.Equal("active", entryTask.Status)

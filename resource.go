@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io/ioutil"
 	"net/url"
@@ -16,12 +17,12 @@ type Resource struct {
 }
 
 // Get returns a single resource/upload
-func (service *ResourcesService) Get(spaceID, resourceID string) (*Resource, error) {
+func (service *ResourcesService) Get(ctx context.Context, spaceID, resourceID string) (*Resource, error) {
 	path := fmt.Sprintf("/spaces/%s/uploads/%s", spaceID, resourceID)
 	query := url.Values{}
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, query, nil)
+	req, err := service.c.newRequest(ctx, method, path, query, nil)
 	if err != nil {
 		return &Resource{}, err
 	}
@@ -35,7 +36,7 @@ func (service *ResourcesService) Get(spaceID, resourceID string) (*Resource, err
 }
 
 // Create creates an upload resource
-func (service *ResourcesService) Create(spaceID, filePath string) error {
+func (service *ResourcesService) Create(ctx context.Context, spaceID, filePath string) error {
 	bytesArray, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		return err
@@ -44,7 +45,7 @@ func (service *ResourcesService) Create(spaceID, filePath string) error {
 	path := fmt.Sprintf("/spaces/%s/uploads", spaceID)
 	method := "POST"
 
-	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	req, err := service.c.newRequest(ctx, method, path, nil, bytes.NewReader(bytesArray))
 	if err != nil {
 		return err
 	}
@@ -55,11 +56,11 @@ func (service *ResourcesService) Create(spaceID, filePath string) error {
 }
 
 // Delete the resource
-func (service *ResourcesService) Delete(spaceID, resourceID string) error {
+func (service *ResourcesService) Delete(ctx context.Context, spaceID, resourceID string) error {
 	path := fmt.Sprintf("/spaces/%s/uploads/%s", spaceID, resourceID)
 	method := "DELETE"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}

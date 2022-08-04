@@ -1,12 +1,14 @@
 package contentful
 
 import (
+	"context"
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestResourcesService_Get(t *testing.T) {
@@ -29,7 +31,7 @@ func TestResourcesService_Get(t *testing.T) {
 	urc = NewResourceClient(CMAToken)
 	urc.BaseURL = server.URL
 
-	resource, err := urc.Resources.Get(spaceID, "0xvkNW6WdQ8JkWlWZ8BC4x")
+	resource, err := urc.Resources.Get(context.Background(), spaceID, "0xvkNW6WdQ8JkWlWZ8BC4x")
 	assertions.Nil(err)
 	assertions.Equal("2015-05-18T11:29:46.809Z", resource.Sys.CreatedAt)
 	assertions.Equal("yadj1kx9rmg0", resource.Sys.Space.Sys.ID)
@@ -55,7 +57,7 @@ func TestResourcesService_Get_2(t *testing.T) {
 	urc = NewResourceClient(CMAToken)
 	urc.BaseURL = server.URL
 
-	_, err = urc.Resources.Get(spaceID, "0xvkNW6WdQ8JkWlWZ8BC4x")
+	_, err = urc.Resources.Get(context.Background(), spaceID, "0xvkNW6WdQ8JkWlWZ8BC4x")
 	assertions.Nil(err)
 }
 
@@ -79,7 +81,7 @@ func TestResourcesService_Create(t *testing.T) {
 	curPath, _ := filepath.Abs("./resource_test.go")
 	absolutePath := curPath[:len(curPath)-16]
 
-	err = urc.Resources.Create(spaceID, absolutePath+"testdata/resource_uploaded.png")
+	err = urc.Resources.Create(context.Background(), spaceID, absolutePath+"testdata/resource_uploaded.png")
 	assertions.Nil(err)
 }
 
@@ -107,7 +109,7 @@ func TestResourcesService_Delete(t *testing.T) {
 	assertions.Nil(err)
 
 	// delete role
-	err = urc.Resources.Delete(spaceID, resource.Sys.ID)
+	err = urc.Resources.Delete(context.Background(), spaceID, resource.Sys.ID)
 	assertions.Nil(err)
 }
 
@@ -135,6 +137,6 @@ func TestResourcesService_Delete_2(t *testing.T) {
 	assertions.Nil(err)
 
 	// delete role
-	err = urc.Resources.Delete(spaceID, resource.Sys.ID)
+	err = urc.Resources.Delete(context.Background(), spaceID, resource.Sys.ID)
 	assertions.NotNil(err)
 }

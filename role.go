@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -63,11 +64,11 @@ func (r *Role) GetVersion() int {
 }
 
 // List returns an environments collection
-func (service *RolesService) List(spaceID string) *Collection {
+func (service *RolesService) List(ctx context.Context, spaceID string) *Collection {
 	path := fmt.Sprintf("/spaces/%s/roles", spaceID)
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return nil
 	}
@@ -80,12 +81,12 @@ func (service *RolesService) List(spaceID string) *Collection {
 }
 
 // Get returns a single role
-func (service *RolesService) Get(spaceID, roleID string) (*Role, error) {
+func (service *RolesService) Get(ctx context.Context, spaceID, roleID string) (*Role, error) {
 	path := fmt.Sprintf("/spaces/%s/roles/%s", spaceID, roleID)
 	query := url.Values{}
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, query, nil)
+	req, err := service.c.newRequest(ctx, method, path, query, nil)
 	if err != nil {
 		return &Role{}, err
 	}
@@ -99,7 +100,7 @@ func (service *RolesService) Get(spaceID, roleID string) (*Role, error) {
 }
 
 // Upsert updates or creates a new role
-func (service *RolesService) Upsert(spaceID string, r *Role) error {
+func (service *RolesService) Upsert(ctx context.Context, spaceID string, r *Role) error {
 	bytesArray, err := json.Marshal(r)
 	if err != nil {
 		return err
@@ -116,7 +117,7 @@ func (service *RolesService) Upsert(spaceID string, r *Role) error {
 		method = "POST"
 	}
 
-	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	req, err := service.c.newRequest(ctx, method, path, nil, bytes.NewReader(bytesArray))
 	if err != nil {
 		return err
 	}
@@ -127,11 +128,11 @@ func (service *RolesService) Upsert(spaceID string, r *Role) error {
 }
 
 // Delete the role
-func (service *RolesService) Delete(spaceID string, roleID string) error {
+func (service *RolesService) Delete(ctx context.Context, spaceID string, roleID string) error {
 	path := fmt.Sprintf("/spaces/%s/roles/%s", spaceID, roleID)
 	method := "DELETE"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}

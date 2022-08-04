@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -10,7 +11,7 @@ import (
 // EditorInterfacesService service
 type EditorInterfacesService service
 
-//EditorInterface model
+// EditorInterface model
 type EditorInterface struct {
 	Sys      *Sys       `json:"sys"`
 	Controls []Controls `json:"controls"`
@@ -34,10 +35,10 @@ type Sidebar struct {
 }
 
 // List returns an EditorInterface collection
-func (service *EditorInterfacesService) List(spaceID string) *Collection {
+func (service *EditorInterfacesService) List(ctx context.Context, spaceID string) *Collection {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/editor_interface", spaceID, service.c.Environment)
 
-	req, err := service.c.newRequest("GET", path, nil, nil)
+	req, err := service.c.newRequest(ctx, "GET", path, nil, nil)
 	if err != nil {
 		return &Collection{}
 	}
@@ -50,12 +51,12 @@ func (service *EditorInterfacesService) List(spaceID string) *Collection {
 }
 
 // Get returns a single EditorInterface
-func (service *EditorInterfacesService) Get(spaceID, contentTypeID string) (*EditorInterface, error) {
+func (service *EditorInterfacesService) Get(ctx context.Context, spaceID, contentTypeID string) (*EditorInterface, error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/content_types/%s/editor_interface", spaceID, service.c.Environment, contentTypeID)
 	query := url.Values{}
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, query, nil)
+	req, err := service.c.newRequest(ctx, method, path, query, nil)
 	if err != nil {
 		return &EditorInterface{}, err
 	}
@@ -69,7 +70,7 @@ func (service *EditorInterfacesService) Get(spaceID, contentTypeID string) (*Edi
 }
 
 // Update updates an editor interface
-func (service *EditorInterfacesService) Update(spaceID, contentTypeID string, e *EditorInterface) error {
+func (service *EditorInterfacesService) Update(ctx context.Context, spaceID, contentTypeID string, e *EditorInterface) error {
 	bytesArray, err := json.Marshal(e)
 	if err != nil {
 		return err
@@ -83,7 +84,7 @@ func (service *EditorInterfacesService) Update(spaceID, contentTypeID string, e 
 		method = "PUT"
 	}
 
-	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	req, err := service.c.newRequest(ctx, method, path, nil, bytes.NewReader(bytesArray))
 	if err != nil {
 		return err
 	}

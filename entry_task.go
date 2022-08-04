@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -36,10 +37,10 @@ func (entryTask *EntryTask) GetVersion() int {
 }
 
 // List returns entry tasks collection
-func (service *EntryTasksService) List(env *Environment, entryID string) *Collection {
+func (service *EntryTasksService) List(ctx context.Context, env *Environment, entryID string) *Collection {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/tasks", env.Sys.Space.Sys.ID, env.Sys.ID, entryID)
 
-	req, err := service.c.newRequest(http.MethodGet, path, nil, nil)
+	req, err := service.c.newRequest(ctx, http.MethodGet, path, nil, nil)
 	if err != nil {
 		return &Collection{}
 	}
@@ -52,12 +53,12 @@ func (service *EntryTasksService) List(env *Environment, entryID string) *Collec
 }
 
 // Get returns a single entry task
-func (service *EntryTasksService) Get(env *Environment, entryID, entryTaskID string) (*EntryTask, error) {
+func (service *EntryTasksService) Get(ctx context.Context, env *Environment, entryID, entryTaskID string) (*EntryTask, error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/tasks/%s", env.Sys.Space.Sys.ID, env.Sys.ID, entryID, entryTaskID)
 	query := url.Values{}
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, query, nil)
+	req, err := service.c.newRequest(ctx, method, path, query, nil)
 	if err != nil {
 		return &EntryTask{}, err
 	}
@@ -71,11 +72,11 @@ func (service *EntryTasksService) Get(env *Environment, entryID, entryTaskID str
 }
 
 // Delete the entry task
-func (service *EntryTasksService) Delete(env *Environment, entryID, entryTaskID string) error {
+func (service *EntryTasksService) Delete(ctx context.Context, env *Environment, entryID, entryTaskID string) error {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/tasks/%s", env.Sys.Space.Sys.ID, env.Sys.ID, entryID, entryTaskID)
 	method := "DELETE"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -84,7 +85,7 @@ func (service *EntryTasksService) Delete(env *Environment, entryID, entryTaskID 
 }
 
 // Upsert updates or creates a new entry task
-func (service *EntryTasksService) Upsert(env *Environment, entryID string, entryTask *EntryTask) error {
+func (service *EntryTasksService) Upsert(ctx context.Context, env *Environment, entryID string, entryTask *EntryTask) error {
 	bytesArray, err := json.Marshal(entryTask)
 	if err != nil {
 		return err
@@ -101,7 +102,7 @@ func (service *EntryTasksService) Upsert(env *Environment, entryID string, entry
 		method = "POST"
 	}
 
-	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	req, err := service.c.newRequest(ctx, method, path, nil, bytes.NewReader(bytesArray))
 	if err != nil {
 		return err
 	}

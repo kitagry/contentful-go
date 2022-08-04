@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"context"
 	"fmt"
 )
 
@@ -21,11 +22,11 @@ type User struct {
 }
 
 // Me returns current authenticated user
-func (service *UsersService) Me() (*User, error) {
+func (service *UsersService) Me(ctx context.Context) (*User, error) {
 	path := fmt.Sprintf("/users/me")
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return nil, err
 	}

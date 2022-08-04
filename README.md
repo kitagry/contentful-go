@@ -10,12 +10,12 @@ GoLang SDK for [Contentful's](https://www.contentful.com) Content Delivery, Prev
 
 # About
 
-[Contentful](https://www.contentful.com) provides a content infrastructure for digital teams to power content in 
-websites, apps, and devices. Unlike a CMS, Contentful was built to integrate with the modern software stack. 
-It offers a central hub for structured content, powerful management and delivery APIs, and a customizable web app 
+[Contentful](https://www.contentful.com) provides a content infrastructure for digital teams to power content in
+websites, apps, and devices. Unlike a CMS, Contentful was built to integrate with the modern software stack.
+It offers a central hub for structured content, powerful management and delivery APIs, and a customizable web app
 that enables developers and content creators to ship digital products faster.
 
-[Go](https://golang.org) is an open source programming language that makes it easy to build simple, reliable, and 
+[Go](https://golang.org) is an open source programming language that makes it easy to build simple, reliable, and
 efficient software.
 
 # Install
@@ -41,8 +41,8 @@ cma := contentful.NewCMA(token)
 
 #### Organization
 
-If your Contentful account is part of an organization, you can setup your API client as such. When you set your 
-organization id for the SDK client, every API request will have the `X-Contentful-Organization: <your-organization-id>` 
+If your Contentful account is part of an organization, you can setup your API client as such. When you set your
+organization id for the SDK client, every API request will have the `X-Contentful-Organization: <your-organization-id>`
 header automatically.
 
 ```go
@@ -51,8 +51,8 @@ cma.SetOrganization("your-organization-id")
 
 #### Debug mode
 
-When debug mode is activated, the SDK client starts to work in verbose mode and tries to print as much information as 
-possible. In debug mode, all outgoing HTTP requests are printed nicely in the form of `curl` commands so that you 
+When debug mode is activated, the SDK client starts to work in verbose mode and tries to print as much information as
+possible. In debug mode, all outgoing HTTP requests are printed nicely in the form of `curl` commands so that you
 can easily drop into your command line to debug specific requests.
 
 ```go
@@ -61,9 +61,9 @@ cma.Debug = true
 
 #### Dependencies
 
-`contentful-go` stores its dependencies under the `vendor` folder and uses [`dep`](https://github.com/golang/dep) to 
-manage dependency resolutions. Dependencies in the `vendor` folder will be loaded automatically by 
-[Go 1.6+](https://golang.org/cmd/go/#hdr-Vendor_Directories). To install the dependencies, run `dep ensure`, for more 
+`contentful-go` stores its dependencies under the `vendor` folder and uses [`dep`](https://github.com/golang/dep) to
+manage dependency resolutions. Dependencies in the `vendor` folder will be loaded automatically by
+[Go 1.6+](https://golang.org/cmd/go/#hdr-Vendor_Directories). To install the dependencies, run `dep ensure`, for more
 options and documentation please visit [`dep`](https://github.com/golang/dep).
 
 # Using the SDK
@@ -108,7 +108,7 @@ To read the interfaces of all services, visit the [Contentful GoDoc](https://god
 
 #### Examples
 
-In the example below, the Get interface of the Spaces service is called. This interface returns an object of the type 
+In the example below, the Get interface of the Spaces service is called. This interface returns an object of the type
 Space. This object could be easily read later by calling the properties of the interface, for example: `Space.Name`
 
 ```go
@@ -118,7 +118,7 @@ if err != nil {
 }
 ```
 
-In the following example, the List interface of the Spaces service is called. This interface returns an array of Space 
+In the following example, the List interface of the Spaces service is called. This interface returns an array of Space
 objects. Working with these collections is explained below.
 ```go
 collection := cma.ContentTypes.List(space.Sys.ID)
@@ -134,12 +134,12 @@ for _, contentType := range collection.ToContentType() {
 
 ## Working with collections
 
-All the endpoints which return an array of objects are wrapped with the `Collection` struct. The main features of the 
+All the endpoints which return an array of objects are wrapped with the `Collection` struct. The main features of the
 `Collection` struct are pagination and type assertion.
 
 ### Type assertion
 
-The `Collection` struct exposes the necessary converters (type assertions) such as `ToSpace()`. The following example 
+The `Collection` struct exposes the necessary converters (type assertions) such as `ToSpace()`. The following example
 gets all spaces for the given account:
 
 ### Example

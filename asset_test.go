@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -32,7 +33,7 @@ func TestAssetsService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.Assets.List(spaceID).Next()
+	collection, err := cma.Assets.List(context.Background(), spaceID).Next()
 	assertions.Nil(err)
 	asset := collection.ToAsset()
 	assertions.Equal(3, len(asset))
@@ -61,7 +62,7 @@ func TestAssetsService_ListPublished(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.Assets.ListPublished(spaceID).Next()
+	collection, err := cma.Assets.ListPublished(context.Background(), spaceID).Next()
 	assertions.Nil(err)
 	asset := collection.ToAsset()
 	assertions.Equal(3, len(asset))
@@ -90,7 +91,7 @@ func TestAssetsService_Get(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	asset, err := cma.Assets.Get(spaceID, "1x0xpXu4pSGS4OukSyWGUK")
+	asset, err := cma.Assets.Get(context.Background(), spaceID, "1x0xpXu4pSGS4OukSyWGUK")
 	assertions.Nil(err)
 	assertions.Equal("hehehe", asset.Fields.Title["en-US"])
 }
@@ -117,7 +118,7 @@ func TestAssetsService_Get_2(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Assets.Get(spaceID, "1x0xpXu4pSGS4OukSyWGUK")
+	_, err = cma.Assets.Get(context.Background(), spaceID, "1x0xpXu4pSGS4OukSyWGUK")
 	assertions.NotNil(err)
 }
 
@@ -177,7 +178,7 @@ func TestAssetsService_Upsert_Create(t *testing.T) {
 		},
 	}
 
-	err := cma.Assets.Upsert(spaceID, asset)
+	err := cma.Assets.Upsert(context.Background(), spaceID, asset)
 	assertions.Nil(err)
 	assertions.Equal("hehehe", asset.Fields.Title["en-US"])
 	assertions.Equal("d3b8dad44e5066cfb805e2357469ee64.png", asset.Fields.File["en-US"].FileName)
@@ -219,7 +220,7 @@ func TestAssetsService_Upsert_Update(t *testing.T) {
 	asset.Fields.Title["en-US"] = "updated"
 	asset.Fields.Description["en-US"] = "also updated"
 
-	err = cma.Assets.Upsert(spaceID, asset)
+	err = cma.Assets.Upsert(context.Background(), spaceID, asset)
 	assertions.Nil(err)
 	assertions.Equal("updated", asset.Fields.Title["en-US"])
 	assertions.Equal("also updated", asset.Fields.Description["en-US"])
@@ -250,7 +251,7 @@ func TestAssetsService_Delete(t *testing.T) {
 	assertions.Nil(err)
 
 	// delete locale
-	err = cma.Assets.Delete(spaceID, asset)
+	err = cma.Assets.Delete(context.Background(), spaceID, asset)
 	assertions.Nil(err)
 }
 
@@ -280,7 +281,7 @@ func TestAssetsService_Process(t *testing.T) {
 	asset, err := assetFromTestData("asset_1.json")
 	assertions.Nil(err)
 
-	err = cma.Assets.Process(spaceID, asset)
+	err = cma.Assets.Process(context.Background(), spaceID, asset)
 	assertions.Nil(err)
 }
 
@@ -310,7 +311,7 @@ func TestAssetsService_Publish(t *testing.T) {
 	asset, err := assetFromTestData("asset_1.json")
 	assertions.Nil(err)
 
-	err = cma.Assets.Publish(spaceID, asset)
+	err = cma.Assets.Publish(context.Background(), spaceID, asset)
 	assertions.Nil(err)
 }
 
@@ -340,7 +341,7 @@ func TestContentTypesService_Unpublish(t *testing.T) {
 	asset, err := assetFromTestData("asset_1.json")
 	assertions.Nil(err)
 
-	err = cma.Assets.Unpublish(spaceID, asset)
+	err = cma.Assets.Unpublish(context.Background(), spaceID, asset)
 	assertions.Nil(err)
 }
 
@@ -370,7 +371,7 @@ func TestAssetsService_Archive(t *testing.T) {
 	asset, err := assetFromTestData("asset_1.json")
 	assertions.Nil(err)
 
-	err = cma.Assets.Archive(spaceID, asset)
+	err = cma.Assets.Archive(context.Background(), spaceID, asset)
 	assertions.Nil(err)
 }
 
@@ -400,6 +401,6 @@ func TestContentTypesService_Unarchive(t *testing.T) {
 	asset, err := assetFromTestData("asset_1.json")
 	assertions.Nil(err)
 
-	err = cma.Assets.Unarchive(spaceID, asset)
+	err = cma.Assets.Unarchive(context.Background(), spaceID, asset)
 	assertions.Nil(err)
 }

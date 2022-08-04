@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -51,10 +52,10 @@ type HealthDetails struct {
 }
 
 // List returns a webhook calls collection
-func (service *WebhookCallsService) List(spaceID, webhookID string) *Collection {
+func (service *WebhookCallsService) List(ctx context.Context, spaceID, webhookID string) *Collection {
 	path := fmt.Sprintf("/spaces/%s/webhooks/%s/calls", spaceID, webhookID)
 
-	req, err := service.c.newRequest(http.MethodGet, path, nil, nil)
+	req, err := service.c.newRequest(ctx, http.MethodGet, path, nil, nil)
 	if err != nil {
 		return &Collection{}
 	}
@@ -67,12 +68,12 @@ func (service *WebhookCallsService) List(spaceID, webhookID string) *Collection 
 }
 
 // Get returns details of a single webhook call
-func (service *WebhookCallsService) Get(spaceID, webhookID, callID string) (*WebhookCall, error) {
+func (service *WebhookCallsService) Get(ctx context.Context, spaceID, webhookID, callID string) (*WebhookCall, error) {
 	path := fmt.Sprintf("/spaces/%s/webhooks/%s/calls/%s", spaceID, webhookID, callID)
 	query := url.Values{}
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, query, nil)
+	req, err := service.c.newRequest(ctx, method, path, query, nil)
 	if err != nil {
 		return &WebhookCall{}, err
 	}
@@ -86,12 +87,12 @@ func (service *WebhookCallsService) Get(spaceID, webhookID, callID string) (*Web
 }
 
 // Health returns the health of a webhook
-func (service *WebhookCallsService) Health(spaceID, webhookID string) (*WebhookHealth, error) {
+func (service *WebhookCallsService) Health(ctx context.Context, spaceID, webhookID string) (*WebhookHealth, error) {
 	path := fmt.Sprintf("/spaces/%s/webhooks/%s/health", spaceID, webhookID)
 	query := url.Values{}
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, query, nil)
+	req, err := service.c.newRequest(ctx, method, path, query, nil)
 	if err != nil {
 		return &WebhookHealth{}, err
 	}

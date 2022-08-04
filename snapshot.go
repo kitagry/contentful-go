@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -44,10 +45,10 @@ type ContentTypeFields struct {
 }
 
 // ListEntrySnapshots returns snapshot collection
-func (service *SnapshotsService) ListEntrySnapshots(spaceID, entryID string) *Collection {
+func (service *SnapshotsService) ListEntrySnapshots(ctx context.Context, spaceID, entryID string) *Collection {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/snapshots", spaceID, service.c.Environment, entryID)
 
-	req, err := service.c.newRequest(http.MethodGet, path, nil, nil)
+	req, err := service.c.newRequest(ctx, http.MethodGet, path, nil, nil)
 	if err != nil {
 		return &Collection{}
 	}
@@ -60,12 +61,12 @@ func (service *SnapshotsService) ListEntrySnapshots(spaceID, entryID string) *Co
 }
 
 // GetEntrySnapshot returns a single snapshot of an entry
-func (service *SnapshotsService) GetEntrySnapshot(spaceID, entryID, snapshotID string) (*EntrySnapshot, error) {
+func (service *SnapshotsService) GetEntrySnapshot(ctx context.Context, spaceID, entryID, snapshotID string) (*EntrySnapshot, error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/snapshots/%s", spaceID, service.c.Environment, entryID, snapshotID)
 	query := url.Values{}
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, query, nil)
+	req, err := service.c.newRequest(ctx, method, path, query, nil)
 	if err != nil {
 		return &EntrySnapshot{}, err
 	}
@@ -79,10 +80,10 @@ func (service *SnapshotsService) GetEntrySnapshot(spaceID, entryID, snapshotID s
 }
 
 // ListContentTypeSnapshots returns snapshot collection
-func (service *SnapshotsService) ListContentTypeSnapshots(spaceID, contentTypeID string) *Collection {
+func (service *SnapshotsService) ListContentTypeSnapshots(ctx context.Context, spaceID, contentTypeID string) *Collection {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/content_types/%s/snapshots", spaceID, service.c.Environment, contentTypeID)
 
-	req, err := service.c.newRequest(http.MethodGet, path, nil, nil)
+	req, err := service.c.newRequest(ctx, http.MethodGet, path, nil, nil)
 	if err != nil {
 		return &Collection{}
 	}
@@ -95,12 +96,12 @@ func (service *SnapshotsService) ListContentTypeSnapshots(spaceID, contentTypeID
 }
 
 // GetContentTypeSnapshots returns a single snapshot of an entry
-func (service *SnapshotsService) GetContentTypeSnapshots(spaceID, contentTypeID, snapshotID string) (*ContentTypeSnapshot, error) {
+func (service *SnapshotsService) GetContentTypeSnapshots(ctx context.Context, spaceID, contentTypeID, snapshotID string) (*ContentTypeSnapshot, error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/content_types/%s/snapshots/%s", spaceID, service.c.Environment, contentTypeID, snapshotID)
 	query := url.Values{}
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, query, nil)
+	req, err := service.c.newRequest(ctx, method, path, query, nil)
 	if err != nil {
 		return &ContentTypeSnapshot{}, err
 	}

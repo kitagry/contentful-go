@@ -1,12 +1,14 @@
 package contentful
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestAppInstallationsService_List(t *testing.T) {
@@ -31,7 +33,7 @@ func TestAppInstallationsService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.AppInstallations.List(spaceID).Next()
+	collection, err := cma.AppInstallations.List(context.Background(), spaceID).Next()
 	assertions.Nil(err)
 
 	installation := collection.ToAppInstallation()
@@ -61,7 +63,7 @@ func TestAppInstallationsService_Get(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	installation, err := cma.AppInstallations.Get(spaceID, "app_definition_id")
+	installation, err := cma.AppInstallations.Get(context.Background(), spaceID, "app_definition_id")
 	assertions.Nil(err)
 	assertions.Equal("world", installation.Parameters["hello"])
 }
@@ -88,7 +90,7 @@ func TestAppInstallationsService_Get_2(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.AppInstallations.Get(spaceID, "app_definition_id")
+	_, err = cma.AppInstallations.Get(context.Background(), spaceID, "app_definition_id")
 	assertions.Nil(err)
 }
 
@@ -124,7 +126,7 @@ func TestAppInstallationsService_Upsert_Create(t *testing.T) {
 		},
 	}
 
-	err := cma.AppInstallations.Upsert(spaceID, "", installation)
+	err := cma.AppInstallations.Upsert(context.Background(), spaceID, "", installation)
 	assertions.Nil(err)
 	assertions.Equal("world", installation.Parameters["hello"])
 }
@@ -161,7 +163,7 @@ func TestAppInstallationsService_Upsert_Update(t *testing.T) {
 
 	installation.Parameters["lorum"] = "ipsum"
 
-	err = cma.AppInstallations.Upsert(spaceID, "app_definition_id", installation)
+	err = cma.AppInstallations.Upsert(context.Background(), spaceID, "app_definition_id", installation)
 	assertions.Nil(err)
 	assertions.Equal("ipsum", installation.Parameters["lorum"])
 }
@@ -186,6 +188,6 @@ func TestAppInstallationsService_Delete(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	err = cma.AppInstallations.Delete(spaceID, "app_definition_id")
+	err = cma.AppInstallations.Delete(context.Background(), spaceID, "app_definition_id")
 	assertions.Nil(err)
 }

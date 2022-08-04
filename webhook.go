@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -38,11 +39,11 @@ func (webhook *Webhook) GetVersion() int {
 }
 
 // List returns webhooks collection
-func (service *WebhooksService) List(spaceID string) *Collection {
+func (service *WebhooksService) List(ctx context.Context, spaceID string) *Collection {
 	path := fmt.Sprintf("/spaces/%s/webhook_definitions", spaceID)
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return &Collection{}
 	}
@@ -55,11 +56,11 @@ func (service *WebhooksService) List(spaceID string) *Collection {
 }
 
 // Get returns a single webhook entity
-func (service *WebhooksService) Get(spaceID, webhookID string) (*Webhook, error) {
+func (service *WebhooksService) Get(ctx context.Context, spaceID, webhookID string) (*Webhook, error) {
 	path := fmt.Sprintf("/spaces/%s/webhook_definitions/%s", spaceID, webhookID)
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +74,7 @@ func (service *WebhooksService) Get(spaceID, webhookID string) (*Webhook, error)
 }
 
 // Upsert updates or creates a new entity
-func (service *WebhooksService) Upsert(spaceID string, webhook *Webhook) error {
+func (service *WebhooksService) Upsert(ctx context.Context, spaceID string, webhook *Webhook) error {
 	bytesArray, err := json.Marshal(webhook)
 	if err != nil {
 		return err
@@ -90,7 +91,7 @@ func (service *WebhooksService) Upsert(spaceID string, webhook *Webhook) error {
 		method = "POST"
 	}
 
-	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	req, err := service.c.newRequest(ctx, method, path, nil, bytes.NewReader(bytesArray))
 	if err != nil {
 		return err
 	}
@@ -101,11 +102,11 @@ func (service *WebhooksService) Upsert(spaceID string, webhook *Webhook) error {
 }
 
 // Delete the webhook
-func (service *WebhooksService) Delete(spaceID string, webhook *Webhook) error {
+func (service *WebhooksService) Delete(ctx context.Context, spaceID string, webhook *Webhook) error {
 	path := fmt.Sprintf("/spaces/%s/webhook_definitions/%s", spaceID, webhook.Sys.ID)
 	method := "DELETE"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}

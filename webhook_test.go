@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -32,7 +33,7 @@ func TestWebhooksService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.Webhooks.List(spaceID).Next()
+	collection, err := cma.Webhooks.List(context.Background(), spaceID).Next()
 	assertions.Nil(err)
 	webhook := collection.ToWebhook()
 	assertions.Equal(1, len(webhook))
@@ -61,7 +62,7 @@ func TestWebhooksService_Get(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	webhook, err := cma.Webhooks.Get(spaceID, "7fstd9fZ9T2p3kwD49FxhI")
+	webhook, err := cma.Webhooks.Get(context.Background(), spaceID, "7fstd9fZ9T2p3kwD49FxhI")
 	assertions.Nil(err)
 	assertions.Equal("webhook-name", webhook.Name)
 }
@@ -88,7 +89,7 @@ func TestWebhooksService_Get_2(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.Webhooks.Get(spaceID, "7fstd9fZ9T2p3kwD49FxhI")
+	_, err = cma.Webhooks.Get(context.Background(), spaceID, "7fstd9fZ9T2p3kwD49FxhI")
 	assertions.NotNil(err)
 }
 
@@ -158,7 +159,7 @@ func TestWebhooksService_Upsert_Create(t *testing.T) {
 		},
 	}
 
-	err = cma.Webhooks.Upsert(spaceID, webhook)
+	err = cma.Webhooks.Upsert(context.Background(), spaceID, webhook)
 	assertions.Nil(err)
 	assertions.Equal("7fstd9fZ9T2p3kwD49FxhI", webhook.Sys.ID)
 	assertions.Equal("webhook-name", webhook.Name)
@@ -235,7 +236,7 @@ func TestWebhooksService_Upsert_Update(t *testing.T) {
 		},
 	}
 
-	err = cma.Webhooks.Upsert(spaceID, webhook)
+	err = cma.Webhooks.Upsert(context.Background(), spaceID, webhook)
 	assertions.Nil(err)
 	assertions.Equal("7fstd9fZ9T2p3kwD49FxhI", webhook.Sys.ID)
 	assertions.Equal(1, webhook.Sys.Version)
@@ -267,6 +268,6 @@ func TestWebhooksService_Delete(t *testing.T) {
 	webhook, err := webhookFromTestData("webhook_1.json")
 	assertions.Nil(err)
 
-	err = cma.Webhooks.Delete(spaceID, webhook)
+	err = cma.Webhooks.Delete(context.Background(), spaceID, webhook)
 	assertions.Nil(err)
 }

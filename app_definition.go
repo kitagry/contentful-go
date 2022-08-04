@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -36,10 +37,10 @@ func (appDefinition *AppDefinition) GetVersion() int {
 }
 
 // List returns an app definitions collection
-func (service *AppDefinitionsService) List(organizationID string) *Collection {
+func (service *AppDefinitionsService) List(ctx context.Context, organizationID string) *Collection {
 	path := fmt.Sprintf("/organizations/%s/app_definitions", organizationID)
 
-	req, err := service.c.newRequest(http.MethodGet, path, nil, nil)
+	req, err := service.c.newRequest(ctx, http.MethodGet, path, nil, nil)
 	if err != nil {
 		return &Collection{}
 	}
@@ -52,12 +53,12 @@ func (service *AppDefinitionsService) List(organizationID string) *Collection {
 }
 
 // Get returns a single app definition
-func (service *AppDefinitionsService) Get(organizationID, appDefinitionID string) (*AppDefinition, error) {
+func (service *AppDefinitionsService) Get(ctx context.Context, organizationID, appDefinitionID string) (*AppDefinition, error) {
 	path := fmt.Sprintf("/organizations/%s/app_definitions/%s", organizationID, appDefinitionID)
 	query := url.Values{}
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, query, nil)
+	req, err := service.c.newRequest(ctx, method, path, query, nil)
 	if err != nil {
 		return &AppDefinition{}, err
 	}
@@ -71,7 +72,7 @@ func (service *AppDefinitionsService) Get(organizationID, appDefinitionID string
 }
 
 // Upsert updates or creates a new app definition
-func (service *AppDefinitionsService) Upsert(organizationID string, definition *AppDefinition) error {
+func (service *AppDefinitionsService) Upsert(ctx context.Context, organizationID string, definition *AppDefinition) error {
 	bytesArray, err := json.Marshal(definition)
 	if err != nil {
 		return err
@@ -88,7 +89,7 @@ func (service *AppDefinitionsService) Upsert(organizationID string, definition *
 		method = "POST"
 	}
 
-	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	req, err := service.c.newRequest(ctx, method, path, nil, bytes.NewReader(bytesArray))
 	if err != nil {
 		return err
 	}
@@ -99,11 +100,11 @@ func (service *AppDefinitionsService) Upsert(organizationID string, definition *
 }
 
 // Delete the app definition
-func (service *AppDefinitionsService) Delete(organizationID, appDefinitionID string) error {
+func (service *AppDefinitionsService) Delete(ctx context.Context, organizationID, appDefinitionID string) error {
 	path := fmt.Sprintf("/organizations/%s/app_definitions/%s", organizationID, appDefinitionID)
 	method := "DELETE"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}

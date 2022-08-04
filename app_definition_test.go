@@ -1,12 +1,14 @@
 package contentful
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestAppDefinitionsService_List(t *testing.T) {
@@ -31,7 +33,7 @@ func TestAppDefinitionsService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.AppDefinitions.List("organization_id").Next()
+	collection, err := cma.AppDefinitions.List(context.Background(), "organization_id").Next()
 	assertions.Nil(err)
 
 	definitions := collection.ToAppDefinition()
@@ -62,7 +64,7 @@ func TestAppDefinitionsService_Get(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	definition, err := cma.AppDefinitions.Get("organization_id", "app_definition_id")
+	definition, err := cma.AppDefinitions.Get(context.Background(), "organization_id", "app_definition_id")
 	assertions.Nil(err)
 	assertions.Equal("app_definition_id", definition.Sys.ID)
 	assertions.Equal("Hello world!", definition.Name)
@@ -90,7 +92,7 @@ func TestAppDefinitionsService_Get_2(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.AppDefinitions.Get("organization_id", "app_definition_id")
+	_, err = cma.AppDefinitions.Get(context.Background(), "organization_id", "app_definition_id")
 	assertions.Nil(err)
 }
 
@@ -130,7 +132,7 @@ func TestAppDefinitionsService_Upsert_Create(t *testing.T) {
 		},
 	}
 
-	err := cma.AppDefinitions.Upsert("organization_id", definition)
+	err := cma.AppDefinitions.Upsert(context.Background(), "organization_id", definition)
 	assertions.Nil(err)
 	assertions.Equal("app_definition_id", definition.Sys.ID)
 	assertions.Equal("Hello world!", definition.Name)
@@ -169,7 +171,7 @@ func TestAppDefinitionsService_Upsert_Update(t *testing.T) {
 	definition.Name = "Hello Pluto"
 	definition.SRC = "https://example.com/hellopluto.html"
 
-	err = cma.AppDefinitions.Upsert("organization_id", definition)
+	err = cma.AppDefinitions.Upsert(context.Background(), "organization_id", definition)
 	assertions.Nil(err)
 	assertions.Equal("Hello Pluto", definition.Name)
 	assertions.Equal("https://example.com/hellopluto.html", definition.SRC)
@@ -198,6 +200,6 @@ func TestAppDefinitionsService_Delete(t *testing.T) {
 	definition, err := appDefinitionFromTestFile("app_definition_1.json")
 	assertions.Nil(err)
 
-	err = cma.AppDefinitions.Delete("organization_id", definition.Sys.ID)
+	err = cma.AppDefinitions.Delete(context.Background(), "organization_id", definition.Sys.ID)
 	assertions.Nil(err)
 }

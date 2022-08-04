@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -29,10 +30,10 @@ func (appInstallation *AppInstallation) GetVersion() int {
 }
 
 // List returns an app installations collection
-func (service *AppInstallationsService) List(spaceID string) *Collection {
+func (service *AppInstallationsService) List(ctx context.Context, spaceID string) *Collection {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/app_installations", spaceID, service.c.Environment)
 
-	req, err := service.c.newRequest(http.MethodGet, path, nil, nil)
+	req, err := service.c.newRequest(ctx, http.MethodGet, path, nil, nil)
 	if err != nil {
 		return &Collection{}
 	}
@@ -45,12 +46,12 @@ func (service *AppInstallationsService) List(spaceID string) *Collection {
 }
 
 // Get returns a single app installation
-func (service *AppInstallationsService) Get(spaceID, appInstallationID string) (*AppInstallation, error) {
+func (service *AppInstallationsService) Get(ctx context.Context, spaceID, appInstallationID string) (*AppInstallation, error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/app_installations/%s", spaceID, service.c.Environment, appInstallationID)
 	query := url.Values{}
 	method := "GET"
 
-	req, err := service.c.newRequest(method, path, query, nil)
+	req, err := service.c.newRequest(ctx, method, path, query, nil)
 	if err != nil {
 		return &AppInstallation{}, err
 	}
@@ -64,7 +65,7 @@ func (service *AppInstallationsService) Get(spaceID, appInstallationID string) (
 }
 
 // Upsert updates or creates a new app installation
-func (service *AppInstallationsService) Upsert(spaceID, appInstallationID string, installation *AppInstallation) error {
+func (service *AppInstallationsService) Upsert(ctx context.Context, spaceID, appInstallationID string, installation *AppInstallation) error {
 	bytesArray, err := json.Marshal(installation)
 	if err != nil {
 		return err
@@ -81,7 +82,7 @@ func (service *AppInstallationsService) Upsert(spaceID, appInstallationID string
 		method = "POST"
 	}
 
-	req, err := service.c.newRequest(method, path, nil, bytes.NewReader(bytesArray))
+	req, err := service.c.newRequest(ctx, method, path, nil, bytes.NewReader(bytesArray))
 	if err != nil {
 		return err
 	}
@@ -92,11 +93,11 @@ func (service *AppInstallationsService) Upsert(spaceID, appInstallationID string
 }
 
 // Delete the app installation
-func (service *AppInstallationsService) Delete(spaceID, appInstallationID string) error {
+func (service *AppInstallationsService) Delete(ctx context.Context, spaceID, appInstallationID string) error {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/app_installations/%s", spaceID, service.c.Environment, appInstallationID)
 	method := "DELETE"
 
-	req, err := service.c.newRequest(method, path, nil, nil)
+	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
 		return err
 	}
