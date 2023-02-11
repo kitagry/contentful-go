@@ -33,9 +33,11 @@ func TestEntriesService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.Entries.List(context.Background(), env).Next()
+	it, err := cma.Entries.List(context.Background(), env)
 	assertions.Nil(err)
-	entry := collection.ToEntry()
+	collection, err := it.Next()
+	assertions.Nil(err)
+	entry := collection.To()
 	assertions.Equal("5KsDBWseXY6QegucYAoacS", entry[0].Sys.ID)
 }
 

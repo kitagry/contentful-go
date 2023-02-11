@@ -1,6 +1,7 @@
 package contentful
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -227,15 +228,17 @@ func (c *Client) do(req *http.Request, v interface{}) error {
 	if err != nil {
 		return err
 	}
+	defer res.Body.Close()
 
 	if res.StatusCode >= 200 && res.StatusCode < 400 {
 		// Upload/Create Resource response cannot be decoded
-		if c.api == "URC" && req.Method == "POST" {
-			defer res.Body.Close()
-		} else {
+		if !(c.api == "URC" && req.Method == "POST") {
 			if v != nil {
-				defer res.Body.Close()
-				err = json.NewDecoder(res.Body).Decode(v)
+				b, err := io.ReadAll(res.Body)
+				if err != nil {
+					return err
+				}
+				err = json.NewDecoder(bytes.NewReader(b)).Decode(v)
 				if err != nil {
 					return err
 				}

@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestRolesService_List(t *testing.T) {
@@ -33,9 +34,11 @@ func TestRolesService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.Roles.List(context.Background(), spaceID).Next()
-	assertions.Nil(err)
-	role := collection.ToRole()
+	it, err := cma.Roles.List(context.Background(), spaceID)
+	require.NoError(t, err)
+	collection, err := it.Next()
+	require.NoError(t, err)
+	role := collection.To()
 	assertions.Equal(2, len(role))
 	assertions.Equal("Author", role[0].Name)
 }
@@ -127,20 +130,20 @@ func TestRolesService_Upsert_Create(t *testing.T) {
 	role := &Role{
 		Name:        "Author",
 		Description: "Describes the author",
-		Policies: []Policies{
+		Policies: []Policy{
 			{
 				Effect: "allow",
 				Actions: []string{
 					"create",
 				},
 				Constraint: Constraint{
-					And: []ConstraintDetail{
+					And: []map[string]any{
 						{
-							Equals: DetailItem{
-								Doc: map[string]interface{}{
+							"equals": map[string]any{
+								"doc": map[string]any{
 									"doc": "sys.type",
 								},
-								ItemType: "Entry",
+								"item_type": "Entry",
 							},
 						},
 					},

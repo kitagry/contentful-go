@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestAssetsService_List(t *testing.T) {
@@ -33,11 +34,13 @@ func TestAssetsService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.Assets.List(context.Background(), spaceID).Next()
-	assertions.Nil(err)
-	asset := collection.ToAsset()
+	it, err := cma.Assets.List(context.Background(), spaceID)
+	require.NoError(t, err)
+	collection, err := it.Next()
+	require.NoError(t, err)
+	asset := collection.To()
 	assertions.Equal(3, len(asset))
-	assertions.Equal("hehehe", asset[0].Fields.Title["en-US"])
+	assertions.Equal("hehehe", asset[0].Fields.Title.Map["en-US"])
 }
 
 func TestAssetsService_ListPublished(t *testing.T) {
@@ -62,11 +65,13 @@ func TestAssetsService_ListPublished(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.Assets.ListPublished(context.Background(), spaceID).Next()
-	assertions.Nil(err)
-	asset := collection.ToAsset()
+	it, err := cma.Assets.ListPublished(context.Background(), spaceID)
+	require.NoError(t, err)
+	collection, err := it.Next()
+	require.NoError(t, err)
+	asset := collection.To()
 	assertions.Equal(3, len(asset))
-	assertions.Equal("hehehe", asset[0].Fields.Title["en-US"])
+	assertions.Equal("hehehe", asset[0].Fields.Title.Map["en-US"])
 }
 
 func TestAssetsService_Get(t *testing.T) {
@@ -93,7 +98,7 @@ func TestAssetsService_Get(t *testing.T) {
 
 	asset, err := cma.Assets.Get(context.Background(), spaceID, "1x0xpXu4pSGS4OukSyWGUK")
 	assertions.Nil(err)
-	assertions.Equal("hehehe", asset.Fields.Title["en-US"])
+	assertions.Equal("hehehe", asset.Fields.Title.Map["en-US"])
 }
 
 func TestAssetsService_Get_2(t *testing.T) {
@@ -152,25 +157,31 @@ func TestAssetsService_Upsert_Create(t *testing.T) {
 	asset := &Asset{
 		Locale: "en-US",
 		Fields: &AssetFields{
-			Title: map[string]string{
-				"en-US": "hehehe",
-				"de":    "hehehe-de",
+			Title: LocaleItem[string]{
+				Map: map[string]string{
+					"en-US": "hehehe",
+					"de":    "hehehe-de",
+				},
 			},
-			Description: map[string]string{
-				"en-US": "asdfasf",
-				"de":    "asdfasf-de",
+			Description: LocaleItem[string]{
+				Map: map[string]string{
+					"en-US": "asdfasf",
+					"de":    "asdfasf-de",
+				},
 			},
-			File: map[string]*File{
-				"en-US": {
-					FileName:    "doge.jpg",
-					ContentType: "image/jpeg",
-					URL:         "//images.contentful.com/cfexampleapi/1x0xpXu4pSGS4OukSyWGUK/cc1239c6385428ef26f4180190532818/doge.jpg",
-					UploadURL:   "",
-					Details: &FileDetails{
-						Size: 522943,
-						Image: &ImageFields{
-							Width:  5800,
-							Height: 4350,
+			File: LocaleItem[File]{
+				Map: map[string]File{
+					"en-US": {
+						FileName:    "doge.jpg",
+						ContentType: "image/jpeg",
+						URL:         "//images.contentful.com/cfexampleapi/1x0xpXu4pSGS4OukSyWGUK/cc1239c6385428ef26f4180190532818/doge.jpg",
+						UploadURL:   "",
+						Details: &FileDetails{
+							Size: 522943,
+							Image: &ImageFields{
+								Width:  5800,
+								Height: 4350,
+							},
 						},
 					},
 				},
@@ -180,8 +191,8 @@ func TestAssetsService_Upsert_Create(t *testing.T) {
 
 	err := cma.Assets.Upsert(context.Background(), spaceID, asset)
 	assertions.Nil(err)
-	assertions.Equal("hehehe", asset.Fields.Title["en-US"])
-	assertions.Equal("d3b8dad44e5066cfb805e2357469ee64.png", asset.Fields.File["en-US"].FileName)
+	assertions.Equal("hehehe", asset.Fields.Title.Map["en-US"])
+	assertions.Equal("d3b8dad44e5066cfb805e2357469ee64.png", asset.Fields.File.Map["en-US"].FileName)
 }
 
 func TestAssetsService_Upsert_Update(t *testing.T) {
@@ -217,13 +228,13 @@ func TestAssetsService_Upsert_Update(t *testing.T) {
 	asset, err := assetFromTestData("asset_1.json")
 	assertions.Nil(err)
 
-	asset.Fields.Title["en-US"] = "updated"
-	asset.Fields.Description["en-US"] = "also updated"
+	asset.Fields.Title.Map["en-US"] = "updated"
+	asset.Fields.Description.Map["en-US"] = "also updated"
 
 	err = cma.Assets.Upsert(context.Background(), spaceID, asset)
 	assertions.Nil(err)
-	assertions.Equal("updated", asset.Fields.Title["en-US"])
-	assertions.Equal("also updated", asset.Fields.Description["en-US"])
+	assertions.Equal("updated", asset.Fields.Title.Map["en-US"])
+	assertions.Equal("also updated", asset.Fields.Description.Map["en-US"])
 }
 
 func TestAssetsService_Delete(t *testing.T) {

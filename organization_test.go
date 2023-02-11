@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestOrganizationsService_List(t *testing.T) {
@@ -32,9 +33,11 @@ func TestOrganizationsService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.Organizations.List(context.Background()).Next()
-	assertions.Nil(err)
-	organization := collection.ToOrganization()
+	it, err := cma.Organizations.List(context.Background())
+	require.NoError(t, err)
+	collection, err := it.Next()
+	require.NoError(t, err)
+	organization := collection.To()
 	assertions.Equal(1, len(organization))
 	assertions.Equal("My organization", organization[0].Name)
 }

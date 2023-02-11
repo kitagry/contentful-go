@@ -33,9 +33,11 @@ func TestScheduledActionsService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.ScheduledActions.List(context.Background(), spaceID, "5KsDBWseXY6QegucYAoacS").Next()
+	it, err := cma.ScheduledActions.List(context.Background(), spaceID, "5KsDBWseXY6QegucYAoacS")
 	assertions.Nil(err)
-	scheduledActions := collection.ToScheduledAction()
+	collection, err := it.Next()
+	assertions.Nil(err)
+	scheduledActions := collection.To()
 	assertions.Equal(1, len(scheduledActions))
 	assertions.Equal("publish", scheduledActions[0].Action)
 }

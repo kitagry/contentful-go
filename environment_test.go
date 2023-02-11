@@ -33,9 +33,11 @@ func TestEnvironmentsService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.Environments.List(context.Background(), spaceID).Next()
+	it, err := cma.Environments.List(context.Background(), spaceID)
 	assertions.Nil(err)
-	environment := collection.ToEnvironment()
+	collection, err := it.Next()
+	assertions.Nil(err)
+	environment := collection.To()
 	assertions.Equal(1, len(environment))
 	assertions.Equal("master", environment[0].Name)
 }

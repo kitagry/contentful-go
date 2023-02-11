@@ -20,7 +20,7 @@ type ContentType struct {
 	DisplayField string   `json:"displayField,omitempty"`
 }
 
-//noinspection GoUnusedConst
+// noinspection GoUnusedConst
 const (
 	// FieldTypeText content type field type for text data
 	FieldTypeText = "Text"
@@ -312,37 +312,37 @@ func (ct *ContentType) GetVersion() int {
 }
 
 // List return a content type collection
-func (service *ContentTypesService) List(ctx context.Context, env *Environment) *Collection {
+func (service *ContentTypesService) List(ctx context.Context, env *Environment) (*Collection[ContentType], error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/content_types", env.Sys.Space.Sys.ID, env.Sys.ID)
 	method := "GET"
 
 	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
-	col := NewCollection(&CollectionOptions{})
+	col := NewCollection[ContentType](&CollectionOptions{})
 	col.c = service.c
 	col.req = req
 
-	return col
+	return col, nil
 }
 
 // ListActivated return a content type collection, with only activated content types
-func (service *ContentTypesService) ListActivated(ctx context.Context, env *Environment) *Collection {
+func (service *ContentTypesService) ListActivated(ctx context.Context, env *Environment) (*Collection[ContentType], error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/public/content_types", env.Sys.Space.Sys.ID, env.Sys.ID)
 	method := "GET"
 
 	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
-	col := NewCollection(&CollectionOptions{})
+	col := NewCollection[ContentType](&CollectionOptions{})
 	col.c = service.c
 	col.req = req
 
-	return col
+	return col, nil
 }
 
 // Get a content type by `contentTypeID` from an environment

@@ -23,31 +23,31 @@ type Controls struct {
 	FieldID         string            `json:"fieldId"`
 	WidgetNameSpace string            `json:"widgetNamespace"`
 	WidgetID        string            `json:"widgetId"`
-	Settings        map[string]string `json:"settings, omitempty"`
+	Settings        map[string]string `json:"settings,omitempty"`
 }
 
 // Sidebar model
 type Sidebar struct {
 	WidgetNameSpace string            `json:"widgetNamespace"`
 	WidgetID        string            `json:"widgetId"`
-	Settings        map[string]string `json:"settings, omitempty"`
+	Settings        map[string]string `json:"settings,omitempty"`
 	Disabled        bool              `json:"disabled"`
 }
 
 // List returns an EditorInterface collection
-func (service *EditorInterfacesService) List(ctx context.Context, spaceID string) *Collection {
+func (service *EditorInterfacesService) List(ctx context.Context, spaceID string) (*Collection[EditorInterface], error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/editor_interface", spaceID, service.c.Environment)
 
 	req, err := service.c.newRequest(ctx, "GET", path, nil, nil)
 	if err != nil {
-		return &Collection{}
+		return nil, err
 	}
 
-	col := NewCollection(&CollectionOptions{})
+	col := NewCollection[EditorInterface](&CollectionOptions{})
 	col.c = service.c
 	col.req = req
 
-	return col
+	return col, nil
 }
 
 // Get returns a single EditorInterface

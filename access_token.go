@@ -31,20 +31,20 @@ func (accessToken *AccessToken) GetVersion() int {
 }
 
 // List returns an access tokens collection
-func (service *AccessTokensService) List(ctx context.Context) *Collection {
+func (service *AccessTokensService) List(ctx context.Context) (*Collection[AccessToken], error) {
 	path := fmt.Sprint("/users/me/access_tokens")
 	method := "GET"
 
 	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
-		return &Collection{}
+		return nil, err
 	}
 
-	col := NewCollection(&CollectionOptions{})
+	col := NewCollection[AccessToken](&CollectionOptions{})
 	col.c = service.c
 	col.req = req
 
-	return col
+	return col, nil
 }
 
 // Get returns a single access token

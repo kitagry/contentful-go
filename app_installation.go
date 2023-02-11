@@ -30,19 +30,19 @@ func (appInstallation *AppInstallation) GetVersion() int {
 }
 
 // List returns an app installations collection
-func (service *AppInstallationsService) List(ctx context.Context, spaceID string) *Collection {
+func (service *AppInstallationsService) List(ctx context.Context, spaceID string) (*Collection[AppInstallation], error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/app_installations", spaceID, service.c.Environment)
 
 	req, err := service.c.newRequest(ctx, http.MethodGet, path, nil, nil)
 	if err != nil {
-		return &Collection{}
+		return nil, err
 	}
 
-	col := NewCollection(&CollectionOptions{})
+	col := NewCollection[AppInstallation](&CollectionOptions{})
 	col.c = service.c
 	col.req = req
 
-	return col
+	return col, nil
 }
 
 // Get returns a single app installation
