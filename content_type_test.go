@@ -73,7 +73,7 @@ func ExampleContentTypesService_Upsert_create() {
 	}
 }
 
-func ExampleContentTypesService_Upsert_Update() {
+func ExampleContentTypesService_Upsert_update() {
 	cma := NewCMA("cma-token")
 
 	contentType, err := cma.ContentTypes.Get(context.Background(), env, "content-type-id")
