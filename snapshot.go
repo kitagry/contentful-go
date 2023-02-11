@@ -45,19 +45,19 @@ type ContentTypeFields struct {
 }
 
 // ListEntrySnapshots returns snapshot collection
-func (service *SnapshotsService) ListEntrySnapshots(ctx context.Context, spaceID, entryID string) *Collection {
+func (service *SnapshotsService) ListEntrySnapshots(ctx context.Context, spaceID, entryID string) (*Collection[EntrySnapshot], error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/snapshots", spaceID, service.c.Environment, entryID)
 
 	req, err := service.c.newRequest(ctx, http.MethodGet, path, nil, nil)
 	if err != nil {
-		return &Collection{}
+		return nil, err
 	}
 
-	col := NewCollection(&CollectionOptions{})
+	col := NewCollection[EntrySnapshot](&CollectionOptions{})
 	col.c = service.c
 	col.req = req
 
-	return col
+	return col, nil
 }
 
 // GetEntrySnapshot returns a single snapshot of an entry
@@ -80,19 +80,19 @@ func (service *SnapshotsService) GetEntrySnapshot(ctx context.Context, spaceID, 
 }
 
 // ListContentTypeSnapshots returns snapshot collection
-func (service *SnapshotsService) ListContentTypeSnapshots(ctx context.Context, spaceID, contentTypeID string) *Collection {
+func (service *SnapshotsService) ListContentTypeSnapshots(ctx context.Context, spaceID, contentTypeID string) (*Collection[ContentTypeSnapshot], error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/content_types/%s/snapshots", spaceID, service.c.Environment, contentTypeID)
 
 	req, err := service.c.newRequest(ctx, http.MethodGet, path, nil, nil)
 	if err != nil {
-		return &Collection{}
+		return nil, err
 	}
 
-	col := NewCollection(&CollectionOptions{})
+	col := NewCollection[ContentTypeSnapshot](&CollectionOptions{})
 	col.c = service.c
 	col.req = req
 
-	return col
+	return col, nil
 }
 
 // GetContentTypeSnapshots returns a single snapshot of an entry

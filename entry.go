@@ -31,19 +31,19 @@ func (entry *Entry) GetVersion() int {
 }
 
 // List returns entries collection
-func (service *EntriesService) List(ctx context.Context, env *Environment) *Collection {
+func (service *EntriesService) List(ctx context.Context, env *Environment) (*Collection[Entry], error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/entries", env.Sys.Space.Sys.ID, env.Sys.ID)
 
 	req, err := service.c.newRequest(ctx, http.MethodGet, path, nil, nil)
 	if err != nil {
-		return &Collection{}
+		return nil, err
 	}
 
-	col := NewCollection(&CollectionOptions{})
+	col := NewCollection[Entry](&CollectionOptions{})
 	col.c = service.c
 	col.req = req
 
-	return col
+	return col, nil
 }
 
 // Get returns a single entry

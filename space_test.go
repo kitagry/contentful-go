@@ -25,12 +25,16 @@ func ExampleSpacesService_Get() {
 
 func ExampleSpacesService_List() {
 	cma := NewCMA("cma-token")
-	collection, err := cma.Spaces.List(context.Background()).Next()
+	it, err := cma.Spaces.List(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+	collection, err := it.Next()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	spaces := collection.ToSpace()
+	spaces := collection.To()
 	for _, space := range spaces {
 		fmt.Println(space.Sys.ID, space.Name)
 	}
@@ -82,13 +86,17 @@ func ExampleSpacesService_Delete() {
 func ExampleSpacesService_Delete_all() {
 	cma := NewCMA("cma-token")
 
-	collection, err := cma.Spaces.List(context.Background()).Next()
+	it, err := cma.Spaces.List(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+	collection, err := it.Next()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for _, space := range collection.ToSpace() {
-		err := cma.Spaces.Delete(context.Background(), space)
+	for _, space := range collection.To() {
+		err := cma.Spaces.Delete(context.Background(), &space)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -117,10 +125,12 @@ func TestSpacesServiceList(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.Spaces.List(context.Background()).Next()
+	it, err := cma.Spaces.List(context.Background())
+	assertions.Nil(err)
+	collection, err := it.Next()
 	assertions.Nil(err)
 
-	spaces := collection.ToSpace()
+	spaces := collection.To()
 	assertions.Equal(2, len(spaces))
 	assertions.Equal("id1", spaces[0].Sys.ID)
 	assertions.Equal("id2", spaces[1].Sys.ID)
@@ -157,13 +167,14 @@ func TestSpacesServiceList_Pagination(t *testing.T) {
 	// cma client
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
-
-	collection, err := cma.Spaces.List(context.Background()).Next()
+	it, err := cma.Spaces.List(context.Background())
+	assertions.Nil(err)
+	collection, err := it.Next()
 	assertions.Nil(err)
 
 	nextPage, err := collection.Next()
 	assertions.Nil(err)
-	assertions.IsType(&Collection{}, nextPage)
+	assertions.IsType(&Collection[Space]{}, nextPage)
 }
 
 func TestSpacesServiceGet(t *testing.T) {

@@ -60,20 +60,20 @@ func (apiKey *APIKey) GetVersion() int {
 }
 
 // List returns all api keys collection
-func (service *APIKeyService) List(ctx context.Context, spaceID string) *Collection {
+func (service *APIKeyService) List(ctx context.Context, spaceID string) (*Collection[APIKey], error) {
 	path := fmt.Sprintf("/spaces/%s/api_keys", spaceID)
 	method := "GET"
 
 	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
-		return &Collection{}
+		return nil, err
 	}
 
-	col := NewCollection(&CollectionOptions{})
+	col := NewCollection[APIKey](&CollectionOptions{})
 	col.c = service.c
 	col.req = req
 
-	return col
+	return col, nil
 }
 
 // Get returns a single api key entity

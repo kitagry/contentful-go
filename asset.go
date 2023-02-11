@@ -20,9 +20,9 @@ type Asset struct {
 
 // AssetFields model
 type AssetFields struct {
-	Title       map[string]string `json:"title,omitempty"`
-	Description map[string]string `json:"description,omitempty"`
-	File        map[string]*File  `json:"file,omitempty"`
+	Title       LocaleItem[string] `json:"title,omitempty"`
+	Description LocaleItem[string] `json:"description,omitempty"`
+	File        LocaleItem[File]   `json:"file,omitempty"`
 }
 
 // File represents a Contentful File
@@ -63,37 +63,37 @@ func (asset *Asset) GetVersion() int {
 }
 
 // List returns asset collection
-func (service *AssetsService) List(ctx context.Context, spaceID string) *Collection {
+func (service *AssetsService) List(ctx context.Context, spaceID string) (*Collection[Asset], error) {
 	path := fmt.Sprintf("/spaces/%s/assets", spaceID)
 	method := "GET"
 
 	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
-		return &Collection{}
+		return nil, err
 	}
 
-	col := NewCollection(&CollectionOptions{})
+	col := NewCollection[Asset](&CollectionOptions{})
 	col.c = service.c
 	col.req = req
 
-	return col
+	return col, nil
 }
 
 // ListPublished return a content type collection, with only activated content types
-func (service *AssetsService) ListPublished(ctx context.Context, spaceID string) *Collection {
+func (service *AssetsService) ListPublished(ctx context.Context, spaceID string) (*Collection[Asset], error) {
 	path := fmt.Sprintf("/spaces/%s/public/assets", spaceID)
 	method := "GET"
 
 	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
-	col := NewCollection(&CollectionOptions{})
+	col := NewCollection[Asset](&CollectionOptions{})
 	col.c = service.c
 	col.req = req
 
-	return col
+	return col, nil
 }
 
 // Get returns a single asset entity

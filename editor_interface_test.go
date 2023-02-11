@@ -33,10 +33,12 @@ func TestEditorInterfacesService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.EditorInterfaces.List(context.Background(), spaceID).Next()
+	it, err := cma.EditorInterfaces.List(context.Background(), spaceID)
+	assertions.Nil(err)
+	collection, err := it.Next()
 	assertions.Nil(err)
 
-	interfaces := collection.ToEditorInterface()
+	interfaces := collection.To()
 	assertions.Equal(1, len(interfaces))
 	assertions.Equal("name", interfaces[0].Controls[0].FieldID)
 	assertions.Equal("extension", interfaces[0].SideBar[0].WidgetNameSpace)

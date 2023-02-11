@@ -15,18 +15,18 @@ type Organization struct {
 }
 
 // List returns an organizations collection
-func (service *OrganizationsService) List(ctx context.Context) *Collection {
+func (service *OrganizationsService) List(ctx context.Context) (*Collection[Organization], error) {
 	path := fmt.Sprintf("/organizations")
 	method := "GET"
 
 	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
-	col := NewCollection(&CollectionOptions{})
+	col := NewCollection[Organization](&CollectionOptions{})
 	col.c = service.c
 	col.req = req
 
-	return col
+	return col, nil
 }

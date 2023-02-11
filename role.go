@@ -17,40 +17,32 @@ type Role struct {
 	Sys         *Sys        `json:"sys"`
 	Name        string      `json:"name"`
 	Description string      `json:"description"`
-	Policies    []Policies  `json:"policies"`
+	Policies    []Policy    `json:"policies"`
 	Permissions Permissions `json:"permissions"`
 }
 
-// Policies model
-type Policies struct {
+// Policy model
+type Policy struct {
 	Effect     string     `json:"effect"`
-	Actions    []string   `json:"actions"`
+	Actions    any        `json:"actions"`
 	Constraint Constraint `json:"constraint"`
 }
 
 // Permissions model
 type Permissions struct {
 	ContentModel       []string `json:"ContentModel"`
-	Settings           string   `json:"Settings"`
-	ContentDelivery    string   `json:"ContentDelivery"`
-	Environments       string   `json:"Environments"`
-	EnvironmentAliases string   `json:"EnvironmentAliases"`
+	Settings           any      `json:"Settings"`
+	ContentDelivery    any      `json:"ContentDelivery"`
+	Environments       any      `json:"Environments"`
+	EnvironmentAliases any      `json:"EnvironmentAliases"`
 }
 
 // Constraint model
 type Constraint struct {
-	And []ConstraintDetail `json:"and"`
-}
-
-// ConstraintDetail model
-type ConstraintDetail struct {
-	Equals DetailItem `json:"equals"`
-}
-
-// DetailItem model
-type DetailItem struct {
-	Doc      map[string]interface{}
-	ItemType string
+	And   any `json:"and"`
+	Equal any `json:"equal"`
+	Or    any `json:"or"`
+	Not   any `rson:"not"`
 }
 
 // GetVersion returns entity version
@@ -64,20 +56,20 @@ func (r *Role) GetVersion() int {
 }
 
 // List returns an environments collection
-func (service *RolesService) List(ctx context.Context, spaceID string) *Collection {
+func (service *RolesService) List(ctx context.Context, spaceID string) (*Collection[Role], error) {
 	path := fmt.Sprintf("/spaces/%s/roles", spaceID)
 	method := "GET"
 
 	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
-	col := NewCollection(&CollectionOptions{})
+	col := NewCollection[Role](&CollectionOptions{})
 	col.c = service.c
 	col.req = req
 
-	return col
+	return col, nil
 }
 
 // Get returns a single role

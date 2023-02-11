@@ -26,12 +26,16 @@ func ExampleContentTypesService_Get() {
 func ExampleContentTypesService_List() {
 	cma := NewCMA("cma-token")
 
-	collection, err := cma.ContentTypes.List(context.Background(), env).Next()
+	it, err := cma.ContentTypes.List(context.Background(), env)
+	if err != nil {
+		log.Fatal(err)
+	}
+	collection, err := it.Next()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	contentTypes := collection.ToContentType()
+	contentTypes := collection.To()
 
 	for _, contentType := range contentTypes {
 		fmt.Println(contentType.Sys.ID, contentType.Sys.PublishedAt)
@@ -130,16 +134,20 @@ func ExampleContentTypesService_Delete() {
 func ExampleContentTypesService_Delete_allDrafts() {
 	cma := NewCMA("cma-token")
 
-	collection, err := cma.ContentTypes.List(context.Background(), env).Next()
+	it, err := cma.ContentTypes.List(context.Background(), env)
+	if err != nil {
+		log.Fatal(err)
+	}
+	collection, err := it.Next()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	contentTypes := collection.ToContentType()
+	contentTypes := collection.To()
 
 	for _, contentType := range contentTypes {
 		if contentType.Sys.PublishedAt == "" {
-			err := cma.ContentTypes.Delete(context.Background(), env, contentType)
+			err := cma.ContentTypes.Delete(context.Background(), env, &contentType)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -169,9 +177,11 @@ func TestContentTypesServiceList(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	collection, err := cma.ContentTypes.List(context.Background(), env).Next()
+	it, err := cma.ContentTypes.List(context.Background(), env)
 	assertions.Nil(err)
-	contentType := collection.ToContentType()
+	collection, err := it.Next()
+	assertions.Nil(err)
+	contentType := collection.To()
 	assertions.Equal(4, len(contentType))
 	assertions.Equal("City", contentType[0].Name)
 }
@@ -198,7 +208,9 @@ func TestContentTypesServiceListActivated(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	_, err = cma.ContentTypes.ListActivated(context.Background(), env).Next()
+	it, err := cma.ContentTypes.ListActivated(context.Background(), env)
+	assertions.Nil(err)
+	_, err = it.Next()
 	assertions.Nil(err)
 }
 

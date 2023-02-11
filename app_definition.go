@@ -37,19 +37,19 @@ func (appDefinition *AppDefinition) GetVersion() int {
 }
 
 // List returns an app definitions collection
-func (service *AppDefinitionsService) List(ctx context.Context, organizationID string) *Collection {
+func (service *AppDefinitionsService) List(ctx context.Context, organizationID string) (*Collection[AppDefinition], error) {
 	path := fmt.Sprintf("/organizations/%s/app_definitions", organizationID)
 
 	req, err := service.c.newRequest(ctx, http.MethodGet, path, nil, nil)
 	if err != nil {
-		return &Collection{}
+		return nil, err
 	}
 
-	col := NewCollection(&CollectionOptions{})
+	col := NewCollection[AppDefinition](&CollectionOptions{})
 	col.c = service.c
 	col.req = req
 
-	return col
+	return col, nil
 }
 
 // Get returns a single app definition

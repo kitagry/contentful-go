@@ -18,8 +18,8 @@ type Membership struct {
 	Sys   *Sys    `json:"sys"`
 	Admin bool    `json:"admin"`
 	Roles []Roles `json:"roles"`
-	User  Member  `json:"user, omitempty"`
-	Email string  `json:"email, omitempty"`
+	User  Member  `json:"user,omitempty"`
+	Email string  `json:"email,omitempty"`
 }
 
 // Roles model
@@ -43,19 +43,19 @@ func (membership *Membership) GetVersion() int {
 }
 
 // List returns membership collection
-func (service *MembershipsService) List(ctx context.Context, spaceID string) *Collection {
+func (service *MembershipsService) List(ctx context.Context, spaceID string) (*Collection[Membership], error) {
 	path := fmt.Sprintf("/spaces/%s/space_memberships", spaceID)
 
 	req, err := service.c.newRequest(ctx, http.MethodGet, path, nil, nil)
 	if err != nil {
-		return &Collection{}
+		return nil, err
 	}
 
-	col := NewCollection(&CollectionOptions{})
+	col := NewCollection[Membership](&CollectionOptions{})
 	col.c = service.c
 	col.req = req
 
-	return col
+	return col, nil
 }
 
 // Get returns a single membership

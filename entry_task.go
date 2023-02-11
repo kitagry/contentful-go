@@ -37,19 +37,19 @@ func (entryTask *EntryTask) GetVersion() int {
 }
 
 // List returns entry tasks collection
-func (service *EntryTasksService) List(ctx context.Context, env *Environment, entryID string) *Collection {
+func (service *EntryTasksService) List(ctx context.Context, env *Environment, entryID string) (*Collection[EntryTask], error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/tasks", env.Sys.Space.Sys.ID, env.Sys.ID, entryID)
 
 	req, err := service.c.newRequest(ctx, http.MethodGet, path, nil, nil)
 	if err != nil {
-		return &Collection{}
+		return nil, err
 	}
 
-	col := NewCollection(&CollectionOptions{})
+	col := NewCollection[EntryTask](&CollectionOptions{})
 	col.c = service.c
 	col.req = req
 
-	return col
+	return col, nil
 }
 
 // Get returns a single entry task

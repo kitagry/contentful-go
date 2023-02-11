@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestUsagesService_GetOrganizationUsage(t *testing.T) {
@@ -31,11 +32,12 @@ func TestUsagesService_GetOrganizationUsage(t *testing.T) {
 	// cma client
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
+	it, err := cma.Usages.GetOrganizationUsage(context.Background(), "organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03")
+	require.NoError(t, err)
+	res, err := it.Next()
+	require.NoError(t, err)
 
-	res, err := cma.Usages.GetOrganizationUsage(context.Background(), "organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03").Next()
-	assertions.Nil(err)
-
-	usage := res.ToUsage()
+	usage := res.To()
 	assertions.Equal(1, len(usage))
 	assertions.Equal("<usage_metric_id>", usage[0].Sys.ID)
 	assertions.Equal("OrganizationPeriodicUsage", usage[0].Sys.Type)
@@ -62,8 +64,9 @@ func TestUsagesService_GetOrganizationUsage_2(t *testing.T) {
 	// cma client
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
-
-	_, err = cma.Usages.GetOrganizationUsage(context.Background(), "organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03").Next()
+	it, err := cma.Usages.GetOrganizationUsage(context.Background(), "organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03")
+	assertions.Nil(err)
+	_, err = it.Next()
 	assertions.NotNil(err)
 }
 
@@ -88,11 +91,12 @@ func TestUsagesService_GetSpaceUsage(t *testing.T) {
 	// cma client
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
+	it, err := cma.Usages.GetSpaceUsage(context.Background(), "organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03")
+	require.NoError(t, err)
+	res, err := it.Next()
+	require.NoError(t, err)
 
-	res, err := cma.Usages.GetSpaceUsage(context.Background(), "organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03").Next()
-	assertions.Nil(err)
-
-	usage := res.ToUsage()
+	usage := res.To()
 	assertions.Equal(1, len(usage))
 	assertions.Equal("<usage_metric_id>", usage[0].Sys.ID)
 	assertions.Equal("SpacePeriodicUsage", usage[0].Sys.Type)
@@ -119,7 +123,8 @@ func TestUsagesService_GetSpaceUsage_2(t *testing.T) {
 	// cma client
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
-
-	_, err = cma.Usages.GetSpaceUsage(context.Background(), "organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03").Next()
+	it, err := cma.Usages.GetSpaceUsage(context.Background(), "organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03")
+	assertions.Nil(err)
+	_, err = it.Next()
 	assertions.NotNil(err)
 }

@@ -10,12 +10,12 @@ type UsagesService service
 
 // Usage model
 type Usage struct {
-	Sys           *Sys              `json:"sys"`
-	UnitOfMeasure string            `json:"unitOfMeasure"`
-	Metric        string            `json:"metric"`
-	DateRange     DateRange         `json:"dateRange"`
-	TotalUsage    int               `json:"usage"`
-	UsagePerDay   map[string]string `json:"usagePerDay"`
+	Sys           *Sys           `json:"sys"`
+	UnitOfMeasure string         `json:"unitOfMeasure"`
+	Metric        string         `json:"metric"`
+	DateRange     DateRange      `json:"dateRange"`
+	TotalUsage    int            `json:"usage"`
+	UsagePerDay   map[string]int `json:"usagePerDay"`
 }
 
 // DateRange model
@@ -25,7 +25,7 @@ type DateRange struct {
 }
 
 // GetOrganizationUsage returns the usage of the specified organization
-func (service *UsagesService) GetOrganizationUsage(ctx context.Context, organizationID, orderBy, metric, startAt, endAt string) *Collection {
+func (service *UsagesService) GetOrganizationUsage(ctx context.Context, organizationID, orderBy, metric, startAt, endAt string) (*Collection[Usage], error) {
 	path := fmt.Sprintf(
 		"/organizations/%s/organization_periodic_usages?order=%s&metric[in]=%s&dateRange.startAt=%s&dateRange.endAt=%s",
 		organizationID,
@@ -38,18 +38,18 @@ func (service *UsagesService) GetOrganizationUsage(ctx context.Context, organiza
 
 	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
-	col := NewCollection(&CollectionOptions{})
+	col := NewCollection[Usage](&CollectionOptions{})
 	col.c = service.c
 	col.req = req
 
-	return col
+	return col, nil
 }
 
 // GetSpaceUsage returns the organization usage by space
-func (service *UsagesService) GetSpaceUsage(ctx context.Context, organizationID, orderBy, metric, startAt, endAt string) *Collection {
+func (service *UsagesService) GetSpaceUsage(ctx context.Context, organizationID, orderBy, metric, startAt, endAt string) (*Collection[Usage], error) {
 	path := fmt.Sprintf(
 		"/organizations/%s/space_periodic_usages?order=%s&metric[in]=%s&dateRange.startAt=%s&dateRange.endAt=%s",
 		organizationID,
@@ -62,12 +62,12 @@ func (service *UsagesService) GetSpaceUsage(ctx context.Context, organizationID,
 
 	req, err := service.c.newRequest(ctx, method, path, nil, nil)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
-	col := NewCollection(&CollectionOptions{})
+	col := NewCollection[Usage](&CollectionOptions{})
 	col.c = service.c
 	col.req = req
 
-	return col
+	return col, nil
 }
