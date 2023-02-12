@@ -2,6 +2,7 @@ package contentful
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -71,11 +72,11 @@ func newCollection[T any](query *Query, client *Client, req *http.Request) (*Col
 		page:  1,
 	}
 
-	return col.Next()
+	return col.Next(req.Context())
 }
 
 // Next makes the col.req
-func (col *Collection[T]) Next() (*Collection[T], error) {
+func (col *Collection[T]) Next(ctx context.Context) (*Collection[T], error) {
 	// setup query params
 	skip := uint16(col.Limit) * (col.page - 1)
 	col.query.Skip(skip)

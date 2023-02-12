@@ -160,7 +160,7 @@ func TestSpacesServiceList_Pagination(t *testing.T) {
 	collection, err := cma.Spaces.List(context.Background(), nil)
 	assertions.Nil(err)
 
-	nextPage, err := collection.Next()
+	nextPage, err := collection.Next(context.Background())
 	assertions.Nil(err)
 	assertions.IsType(&Collection[Space]{}, nextPage)
 }
