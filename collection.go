@@ -45,7 +45,7 @@ type CollectionOptions struct {
 
 // Collection model
 type Collection[T any] struct {
-	Query
+	query    *Query
 	c        *Client
 	req      *http.Request
 	page     uint16
@@ -57,29 +57,31 @@ type Collection[T any] struct {
 	Includes interface{} `json:"includes"`
 }
 
-// NewCollection initializes a new collection
-func NewCollection[T any](options *CollectionOptions) *Collection[T] {
-	query := NewQuery()
-	query.Order("sys.createdAt", true)
-
-	if options.Limit > 0 {
-		query.Limit(options.Limit)
+// newCollection initializes a new collection
+// if query is nil, order sys.createdAt
+func newCollection[T any](query *Query, client *Client, req *http.Request) (*Collection[T], error) {
+	if query == nil {
+		query = NewQuery()
+		query.Order("sys.createdAt", true)
 	}
-
-	return &Collection[T]{
-		Query: *query,
+	col := &Collection[T]{
+		query: query,
+		c:     client,
+		req:   req,
 		page:  1,
 	}
+
+	return col.Next()
 }
 
 // Next makes the col.req
 func (col *Collection[T]) Next() (*Collection[T], error) {
 	// setup query params
 	skip := uint16(col.Limit) * (col.page - 1)
-	col.Query.Skip(skip)
+	col.query.Skip(skip)
 
 	// override request query
-	col.req.URL.RawQuery = col.Query.String()
+	col.req.URL.RawQuery = col.query.String()
 
 	// makes api call
 	err := col.c.do(col.req, col)

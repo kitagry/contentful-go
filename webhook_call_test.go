@@ -32,9 +32,7 @@ func TestWebhookCallsService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	it, err := cma.WebhookCalls.List(context.Background(), spaceID, "0KzM2HxYr5O1pZ4SaUzK8h")
-	assertions.Nil(err)
-	collection, err := it.Next()
+	collection, err := cma.WebhookCalls.List(context.Background(), spaceID, "0KzM2HxYr5O1pZ4SaUzK8h", nil)
 	assertions.Nil(err)
 
 	spaces := collection.Items

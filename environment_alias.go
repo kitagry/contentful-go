@@ -33,7 +33,7 @@ func (environmentAlias *EnvironmentAlias) GetVersion() int {
 }
 
 // List returns an environment aliases collection
-func (service *EnvironmentAliasesService) List(ctx context.Context, spaceID string) (*Collection[EnvironmentAlias], error) {
+func (service *EnvironmentAliasesService) List(ctx context.Context, spaceID string, query *Query) (*Collection[EnvironmentAlias], error) {
 	path := fmt.Sprintf("/spaces/%s/environment_aliases", spaceID)
 	method := "GET"
 
@@ -42,9 +42,10 @@ func (service *EnvironmentAliasesService) List(ctx context.Context, spaceID stri
 		return nil, err
 	}
 
-	col := NewCollection[EnvironmentAlias](&CollectionOptions{})
-	col.c = service.c
-	col.req = req
+	col, err := newCollection[EnvironmentAlias](query, service.c, req)
+	if err != nil {
+		return nil, err
+	}
 
 	return col, nil
 }

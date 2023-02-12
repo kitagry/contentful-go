@@ -33,11 +33,9 @@ func TestAPIKeyService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	it, err := cma.APIKeys.List(context.Background(), spaceID)
+	collection, err := cma.APIKeys.List(context.Background(), spaceID, nil)
 	assertions.Nil(err)
-	res, err := it.Next()
-	assertions.Nil(err)
-	keys := res.Items
+	keys := collection.Items
 	assertions.Equal(1, len(keys))
 	assertions.Equal("exampleapikey", keys[0].Sys.ID)
 }

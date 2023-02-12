@@ -32,9 +32,7 @@ func TestSnapshotsService_ListEntrySnapshots(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	it, err := cma.Snapshots.ListEntrySnapshots(context.Background(), spaceID, "hfM9RCJIk0wIm06WkEOQY")
-	assertions.Nil(err)
-	collection, err := it.Next()
+	collection, err := cma.Snapshots.ListEntrySnapshots(context.Background(), spaceID, "hfM9RCJIk0wIm06WkEOQY", nil)
 	assertions.Nil(err)
 	entrySnapshot := collection.Items
 	assertions.Equal(1, len(entrySnapshot))
@@ -116,9 +114,7 @@ func TestSnapshotsService_ListContentTypeSnapshots(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	it, err := cma.Snapshots.ListContentTypeSnapshots(context.Background(), spaceID, "hfM9RCJIk0wIm06WkEOQY")
-	assertions.Nil(err)
-	collection, err := it.Next()
+	collection, err := cma.Snapshots.ListContentTypeSnapshots(context.Background(), spaceID, "hfM9RCJIk0wIm06WkEOQY", nil)
 	assertions.Nil(err)
 	entrySnapshot := collection.Items
 	assertions.Equal(1, len(entrySnapshot))

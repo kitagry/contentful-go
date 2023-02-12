@@ -33,9 +33,7 @@ func TestLocalesService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	it, err := cma.Locales.List(context.Background(), spaceID)
-	assertions.Nil(err)
-	collection, err := it.Next()
+	collection, err := cma.Locales.List(context.Background(), spaceID, nil)
 	assertions.Nil(err)
 	locale := collection.Items
 	assertions.Equal("34N35DoyUQAtaKwWTgZs34", locale[0].Sys.ID)

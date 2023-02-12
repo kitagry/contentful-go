@@ -25,11 +25,7 @@ func ExampleSpacesService_Get() {
 
 func ExampleSpacesService_List() {
 	cma := NewCMA("cma-token")
-	it, err := cma.Spaces.List(context.Background())
-	if err != nil {
-		log.Fatal(err)
-	}
-	collection, err := it.Next()
+	collection, err := cma.Spaces.List(context.Background(), nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -86,11 +82,7 @@ func ExampleSpacesService_Delete() {
 func ExampleSpacesService_Delete_all() {
 	cma := NewCMA("cma-token")
 
-	it, err := cma.Spaces.List(context.Background())
-	if err != nil {
-		log.Fatal(err)
-	}
-	collection, err := it.Next()
+	collection, err := cma.Spaces.List(context.Background(), nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -125,9 +117,7 @@ func TestSpacesServiceList(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	it, err := cma.Spaces.List(context.Background())
-	assertions.Nil(err)
-	collection, err := it.Next()
+	collection, err := cma.Spaces.List(context.Background(), nil)
 	assertions.Nil(err)
 
 	spaces := collection.Items
@@ -167,9 +157,7 @@ func TestSpacesServiceList_Pagination(t *testing.T) {
 	// cma client
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
-	it, err := cma.Spaces.List(context.Background())
-	assertions.Nil(err)
-	collection, err := it.Next()
+	collection, err := cma.Spaces.List(context.Background(), nil)
 	assertions.Nil(err)
 
 	nextPage, err := collection.Next()

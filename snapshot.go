@@ -45,7 +45,7 @@ type ContentTypeFields struct {
 }
 
 // ListEntrySnapshots returns snapshot collection
-func (service *SnapshotsService) ListEntrySnapshots(ctx context.Context, spaceID, entryID string) (*Collection[EntrySnapshot], error) {
+func (service *SnapshotsService) ListEntrySnapshots(ctx context.Context, spaceID, entryID string, query *Query) (*Collection[EntrySnapshot], error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/entries/%s/snapshots", spaceID, service.c.Environment, entryID)
 
 	req, err := service.c.newRequest(ctx, http.MethodGet, path, nil, nil)
@@ -53,9 +53,10 @@ func (service *SnapshotsService) ListEntrySnapshots(ctx context.Context, spaceID
 		return nil, err
 	}
 
-	col := NewCollection[EntrySnapshot](&CollectionOptions{})
-	col.c = service.c
-	col.req = req
+	col, err := newCollection[EntrySnapshot](query, service.c, req)
+	if err != nil {
+		return nil, err
+	}
 
 	return col, nil
 }
@@ -80,7 +81,7 @@ func (service *SnapshotsService) GetEntrySnapshot(ctx context.Context, spaceID, 
 }
 
 // ListContentTypeSnapshots returns snapshot collection
-func (service *SnapshotsService) ListContentTypeSnapshots(ctx context.Context, spaceID, contentTypeID string) (*Collection[ContentTypeSnapshot], error) {
+func (service *SnapshotsService) ListContentTypeSnapshots(ctx context.Context, spaceID, contentTypeID string, query *Query) (*Collection[ContentTypeSnapshot], error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/content_types/%s/snapshots", spaceID, service.c.Environment, contentTypeID)
 
 	req, err := service.c.newRequest(ctx, http.MethodGet, path, nil, nil)
@@ -88,9 +89,10 @@ func (service *SnapshotsService) ListContentTypeSnapshots(ctx context.Context, s
 		return nil, err
 	}
 
-	col := NewCollection[ContentTypeSnapshot](&CollectionOptions{})
-	col.c = service.c
-	col.req = req
+	col, err := newCollection[ContentTypeSnapshot](query, service.c, req)
+	if err != nil {
+		return nil, err
+	}
 
 	return col, nil
 }

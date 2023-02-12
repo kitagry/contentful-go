@@ -48,7 +48,7 @@ func (locale *Locale) GetVersion() int {
 }
 
 // List returns a locales collection
-func (service *LocalesService) List(ctx context.Context, spaceID string) (*Collection[Locale], error) {
+func (service *LocalesService) List(ctx context.Context, spaceID string, query *Query) (*Collection[Locale], error) {
 	path := fmt.Sprintf("/spaces/%s/locales", spaceID)
 	method := "GET"
 
@@ -57,9 +57,10 @@ func (service *LocalesService) List(ctx context.Context, spaceID string) (*Colle
 		return nil, err
 	}
 
-	col := NewCollection[Locale](&CollectionOptions{})
-	col.c = service.c
-	col.req = req
+	col, err := newCollection[Locale](query, service.c, req)
+	if err != nil {
+		return nil, err
+	}
 
 	return col, nil
 }

@@ -31,7 +31,7 @@ func (entry *Entry) GetVersion() int {
 }
 
 // List returns entries collection
-func (service *EntriesService) List(ctx context.Context, env *Environment) (*Collection[Entry], error) {
+func (service *EntriesService) List(ctx context.Context, env *Environment, query *Query) (*Collection[Entry], error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/entries", env.Sys.Space.Sys.ID, env.Sys.ID)
 
 	req, err := service.c.newRequest(ctx, http.MethodGet, path, nil, nil)
@@ -39,9 +39,10 @@ func (service *EntriesService) List(ctx context.Context, env *Environment) (*Col
 		return nil, err
 	}
 
-	col := NewCollection[Entry](&CollectionOptions{})
-	col.c = service.c
-	col.req = req
+	col, err := newCollection[Entry](query, service.c, req)
+	if err != nil {
+		return nil, err
+	}
 
 	return col, nil
 }

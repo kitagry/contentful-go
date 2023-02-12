@@ -33,9 +33,7 @@ func TestEnvironmentAliasesServices_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	it, err := cma.EnvironmentAliases.List(context.Background(), spaceID)
-	assertions.Nil(err)
-	collection, err := it.Next()
+	collection, err := cma.EnvironmentAliases.List(context.Background(), spaceID, nil)
 	assertions.Nil(err)
 	environmentAlias := collection.Items
 	assertions.Equal(1, len(environmentAlias))

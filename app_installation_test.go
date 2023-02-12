@@ -33,9 +33,7 @@ func TestAppInstallationsService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	it, err := cma.AppInstallations.List(context.Background(), spaceID)
-	assertions.Nil(err)
-	collection, err := it.Next()
+	collection, err := cma.AppInstallations.List(context.Background(), spaceID, nil)
 	assertions.Nil(err)
 
 	installation := collection.Items

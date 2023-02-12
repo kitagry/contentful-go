@@ -42,7 +42,7 @@ func (extension *Extension) GetVersion() int {
 }
 
 // List returns an extensions collection
-func (service *ExtensionsService) List(ctx context.Context, env *Environment) (*Collection[Extension], error) {
+func (service *ExtensionsService) List(ctx context.Context, env *Environment, query *Query) (*Collection[Extension], error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/extensions", env.Sys.Space.Sys.ID, env.Sys.ID)
 
 	req, err := service.c.newRequest(ctx, "GET", path, nil, nil)
@@ -50,9 +50,10 @@ func (service *ExtensionsService) List(ctx context.Context, env *Environment) (*
 		return nil, err
 	}
 
-	col := NewCollection[Extension](&CollectionOptions{})
-	col.c = service.c
-	col.req = req
+	col, err := newCollection[Extension](query, service.c, req)
+	if err != nil {
+		return nil, err
+	}
 
 	return col, nil
 }

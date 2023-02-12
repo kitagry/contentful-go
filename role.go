@@ -56,7 +56,7 @@ func (r *Role) GetVersion() int {
 }
 
 // List returns an environments collection
-func (service *RolesService) List(ctx context.Context, spaceID string) (*Collection[Role], error) {
+func (service *RolesService) List(ctx context.Context, spaceID string, query *Query) (*Collection[Role], error) {
 	path := fmt.Sprintf("/spaces/%s/roles", spaceID)
 	method := "GET"
 
@@ -65,9 +65,10 @@ func (service *RolesService) List(ctx context.Context, spaceID string) (*Collect
 		return nil, err
 	}
 
-	col := NewCollection[Role](&CollectionOptions{})
-	col.c = service.c
-	col.req = req
+	col, err := newCollection[Role](query, service.c, req)
+	if err != nil {
+		return nil, err
+	}
 
 	return col, nil
 }

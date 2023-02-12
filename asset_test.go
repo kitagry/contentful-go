@@ -34,9 +34,7 @@ func TestAssetsService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	it, err := cma.Assets.List(context.Background(), spaceID)
-	require.NoError(t, err)
-	collection, err := it.Next()
+	collection, err := cma.Assets.List(context.Background(), spaceID, nil)
 	require.NoError(t, err)
 	asset := collection.Items
 	assertions.Equal(3, len(asset))
@@ -65,9 +63,7 @@ func TestAssetsService_ListPublished(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	it, err := cma.Assets.ListPublished(context.Background(), spaceID)
-	require.NoError(t, err)
-	collection, err := it.Next()
+	collection, err := cma.Assets.ListPublished(context.Background(), spaceID, nil)
 	require.NoError(t, err)
 	asset := collection.Items
 	assertions.Equal(3, len(asset))

@@ -28,7 +28,7 @@ func (e *Environment) GetVersion() int {
 }
 
 // List returns an environments collection
-func (service *EnvironmentsService) List(ctx context.Context, spaceID string) (*Collection[Environment], error) {
+func (service *EnvironmentsService) List(ctx context.Context, spaceID string, query *Query) (*Collection[Environment], error) {
 	path := fmt.Sprintf("/spaces/%s/environments", spaceID)
 	method := "GET"
 
@@ -37,9 +37,10 @@ func (service *EnvironmentsService) List(ctx context.Context, spaceID string) (*
 		return nil, err
 	}
 
-	col := NewCollection[Environment](&CollectionOptions{})
-	col.c = service.c
-	col.req = req
+	col, err := newCollection[Environment](query, service.c, req)
+	if err != nil {
+		return nil, err
+	}
 
 	return col, nil
 }

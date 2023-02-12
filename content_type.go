@@ -312,7 +312,7 @@ func (ct *ContentType) GetVersion() int {
 }
 
 // List return a content type collection
-func (service *ContentTypesService) List(ctx context.Context, env *Environment) (*Collection[ContentType], error) {
+func (service *ContentTypesService) List(ctx context.Context, env *Environment, query *Query) (*Collection[ContentType], error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/content_types", env.Sys.Space.Sys.ID, env.Sys.ID)
 	method := "GET"
 
@@ -321,15 +321,16 @@ func (service *ContentTypesService) List(ctx context.Context, env *Environment) 
 		return nil, err
 	}
 
-	col := NewCollection[ContentType](&CollectionOptions{})
-	col.c = service.c
-	col.req = req
+	col, err := newCollection[ContentType](query, service.c, req)
+	if err != nil {
+		return nil, err
+	}
 
 	return col, nil
 }
 
 // ListActivated return a content type collection, with only activated content types
-func (service *ContentTypesService) ListActivated(ctx context.Context, env *Environment) (*Collection[ContentType], error) {
+func (service *ContentTypesService) ListActivated(ctx context.Context, env *Environment, query *Query) (*Collection[ContentType], error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/public/content_types", env.Sys.Space.Sys.ID, env.Sys.ID)
 	method := "GET"
 
@@ -338,9 +339,10 @@ func (service *ContentTypesService) ListActivated(ctx context.Context, env *Envi
 		return nil, err
 	}
 
-	col := NewCollection[ContentType](&CollectionOptions{})
-	col.c = service.c
-	col.req = req
+	col, err := newCollection[ContentType](query, service.c, req)
+	if err != nil {
+		return nil, err
+	}
 
 	return col, nil
 }

@@ -25,7 +25,7 @@ type DateRange struct {
 }
 
 // GetOrganizationUsage returns the usage of the specified organization
-func (service *UsagesService) GetOrganizationUsage(ctx context.Context, organizationID, orderBy, metric, startAt, endAt string) (*Collection[Usage], error) {
+func (service *UsagesService) GetOrganizationUsage(ctx context.Context, organizationID, orderBy, metric, startAt, endAt string, query *Query) (*Collection[Usage], error) {
 	path := fmt.Sprintf(
 		"/organizations/%s/organization_periodic_usages?order=%s&metric[in]=%s&dateRange.startAt=%s&dateRange.endAt=%s",
 		organizationID,
@@ -41,15 +41,16 @@ func (service *UsagesService) GetOrganizationUsage(ctx context.Context, organiza
 		return nil, err
 	}
 
-	col := NewCollection[Usage](&CollectionOptions{})
-	col.c = service.c
-	col.req = req
+	col, err := newCollection[Usage](query, service.c, req)
+	if err != nil {
+		return nil, err
+	}
 
 	return col, nil
 }
 
 // GetSpaceUsage returns the organization usage by space
-func (service *UsagesService) GetSpaceUsage(ctx context.Context, organizationID, orderBy, metric, startAt, endAt string) (*Collection[Usage], error) {
+func (service *UsagesService) GetSpaceUsage(ctx context.Context, organizationID, orderBy, metric, startAt, endAt string, query *Query) (*Collection[Usage], error) {
 	path := fmt.Sprintf(
 		"/organizations/%s/space_periodic_usages?order=%s&metric[in]=%s&dateRange.startAt=%s&dateRange.endAt=%s",
 		organizationID,
@@ -65,9 +66,10 @@ func (service *UsagesService) GetSpaceUsage(ctx context.Context, organizationID,
 		return nil, err
 	}
 
-	col := NewCollection[Usage](&CollectionOptions{})
-	col.c = service.c
-	col.req = req
+	col, err := newCollection[Usage](query, service.c, req)
+	if err != nil {
+		return nil, err
+	}
 
 	return col, nil
 }

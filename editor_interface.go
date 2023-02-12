@@ -35,7 +35,7 @@ type Sidebar struct {
 }
 
 // List returns an EditorInterface collection
-func (service *EditorInterfacesService) List(ctx context.Context, spaceID string) (*Collection[EditorInterface], error) {
+func (service *EditorInterfacesService) List(ctx context.Context, spaceID string, query *Query) (*Collection[EditorInterface], error) {
 	path := fmt.Sprintf("/spaces/%s/environments/%s/editor_interface", spaceID, service.c.Environment)
 
 	req, err := service.c.newRequest(ctx, "GET", path, nil, nil)
@@ -43,9 +43,10 @@ func (service *EditorInterfacesService) List(ctx context.Context, spaceID string
 		return nil, err
 	}
 
-	col := NewCollection[EditorInterface](&CollectionOptions{})
-	col.c = service.c
-	col.req = req
+	col, err := newCollection[EditorInterface](query, service.c, req)
+	if err != nil {
+		return nil, err
+	}
 
 	return col, nil
 }

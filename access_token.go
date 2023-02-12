@@ -31,7 +31,7 @@ func (accessToken *AccessToken) GetVersion() int {
 }
 
 // List returns an access tokens collection
-func (service *AccessTokensService) List(ctx context.Context) (*Collection[AccessToken], error) {
+func (service *AccessTokensService) List(ctx context.Context, query *Query) (*Collection[AccessToken], error) {
 	path := fmt.Sprint("/users/me/access_tokens")
 	method := "GET"
 
@@ -40,9 +40,10 @@ func (service *AccessTokensService) List(ctx context.Context) (*Collection[Acces
 		return nil, err
 	}
 
-	col := NewCollection[AccessToken](&CollectionOptions{})
-	col.c = service.c
-	col.req = req
+	col, err := newCollection[AccessToken](query, service.c, req)
+	if err != nil {
+		return nil, err
+	}
 
 	return col, nil
 }

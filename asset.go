@@ -63,7 +63,7 @@ func (asset *Asset) GetVersion() int {
 }
 
 // List returns asset collection
-func (service *AssetsService) List(ctx context.Context, spaceID string) (*Collection[Asset], error) {
+func (service *AssetsService) List(ctx context.Context, spaceID string, query *Query) (*Collection[Asset], error) {
 	path := fmt.Sprintf("/spaces/%s/assets", spaceID)
 	method := "GET"
 
@@ -72,15 +72,16 @@ func (service *AssetsService) List(ctx context.Context, spaceID string) (*Collec
 		return nil, err
 	}
 
-	col := NewCollection[Asset](&CollectionOptions{})
-	col.c = service.c
-	col.req = req
+	col, err := newCollection[Asset](query, service.c, req)
+	if err != nil {
+		return nil, err
+	}
 
 	return col, nil
 }
 
 // ListPublished return a content type collection, with only activated content types
-func (service *AssetsService) ListPublished(ctx context.Context, spaceID string) (*Collection[Asset], error) {
+func (service *AssetsService) ListPublished(ctx context.Context, spaceID string, query *Query) (*Collection[Asset], error) {
 	path := fmt.Sprintf("/spaces/%s/public/assets", spaceID)
 	method := "GET"
 
@@ -89,9 +90,10 @@ func (service *AssetsService) ListPublished(ctx context.Context, spaceID string)
 		return nil, err
 	}
 
-	col := NewCollection[Asset](&CollectionOptions{})
-	col.c = service.c
-	col.req = req
+	col, err := newCollection[Asset](query, service.c, req)
+	if err != nil {
+		return nil, err
+	}
 
 	return col, nil
 }

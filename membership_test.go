@@ -33,9 +33,7 @@ func TestMembershipsService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	it, err := cma.Memberships.List(context.Background(), spaceID)
-	assertions.Nil(err)
-	collection, err := it.Next()
+	collection, err := cma.Memberships.List(context.Background(), spaceID, nil)
 	assertions.Nil(err)
 	membership := collection.Items
 	assertions.Equal(2, len(membership))

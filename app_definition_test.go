@@ -33,9 +33,7 @@ func TestAppDefinitionsService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	it, err := cma.AppDefinitions.List(context.Background(), "organization_id")
-	assertions.Nil(err)
-	collection, err := it.Next()
+	collection, err := cma.AppDefinitions.List(context.Background(), "organization_id", nil)
 	assertions.Nil(err)
 
 	definitions := collection.Items

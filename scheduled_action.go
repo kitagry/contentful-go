@@ -42,7 +42,7 @@ func (scheduledAction *ScheduledAction) GetVersion() int {
 }
 
 // List returns scheduled actions collection
-func (service *ScheduledActionsService) List(ctx context.Context, spaceID, entryID string) (*Collection[ScheduledAction], error) {
+func (service *ScheduledActionsService) List(ctx context.Context, spaceID, entryID string, query *Query) (*Collection[ScheduledAction], error) {
 	path := fmt.Sprintf("/spaces/%s/scheduled_actions?entity.sys.id=%s&environment.sys.id=%s", spaceID, entryID, service.c.Environment)
 
 	req, err := service.c.newRequest(ctx, http.MethodGet, path, nil, nil)
@@ -50,9 +50,10 @@ func (service *ScheduledActionsService) List(ctx context.Context, spaceID, entry
 		return nil, err
 	}
 
-	col := NewCollection[ScheduledAction](&CollectionOptions{})
-	col.c = service.c
-	col.req = req
+	col, err := newCollection[ScheduledAction](query, service.c, req)
+	if err != nil {
+		return nil, err
+	}
 
 	return col, nil
 }
