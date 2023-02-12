@@ -37,7 +37,7 @@ func TestOrganizationsService_List(t *testing.T) {
 	require.NoError(t, err)
 	collection, err := it.Next()
 	require.NoError(t, err)
-	organization := collection.To()
+	organization := collection.Items
 	assertions.Equal(1, len(organization))
 	assertions.Equal("My organization", organization[0].Name)
 }

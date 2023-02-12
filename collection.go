@@ -91,7 +91,3 @@ func (col *Collection[T]) Next() (*Collection[T], error) {
 
 	return col, nil
 }
-
-func (col *Collection[T]) To() []T {
-	return col.Items
-}

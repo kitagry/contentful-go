@@ -37,7 +37,7 @@ func TestEntryTasksService_List(t *testing.T) {
 	assertions.Nil(err)
 	collection, err := it.Next()
 	assertions.Nil(err)
-	entryTasks := collection.To()
+	entryTasks := collection.Items
 	assertions.Equal(1, len(entryTasks))
 	assertions.Equal("Review translation", entryTasks[0].Body)
 }

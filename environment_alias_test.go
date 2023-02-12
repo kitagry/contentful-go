@@ -37,7 +37,7 @@ func TestEnvironmentAliasesServices_List(t *testing.T) {
 	assertions.Nil(err)
 	collection, err := it.Next()
 	assertions.Nil(err)
-	environmentAlias := collection.To()
+	environmentAlias := collection.Items
 	assertions.Equal(1, len(environmentAlias))
 	assertions.Equal("master-18-3-2020", environmentAlias[0].Alias.Sys.ID)
 }

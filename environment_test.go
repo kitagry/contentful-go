@@ -37,7 +37,7 @@ func TestEnvironmentsService_List(t *testing.T) {
 	assertions.Nil(err)
 	collection, err := it.Next()
 	assertions.Nil(err)
-	environment := collection.To()
+	environment := collection.Items
 	assertions.Equal(1, len(environment))
 	assertions.Equal("master", environment[0].Name)
 }

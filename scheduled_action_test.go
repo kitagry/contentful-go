@@ -37,7 +37,7 @@ func TestScheduledActionsService_List(t *testing.T) {
 	assertions.Nil(err)
 	collection, err := it.Next()
 	assertions.Nil(err)
-	scheduledActions := collection.To()
+	scheduledActions := collection.Items
 	assertions.Equal(1, len(scheduledActions))
 	assertions.Equal("publish", scheduledActions[0].Action)
 }

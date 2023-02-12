@@ -37,7 +37,7 @@ func TestUsagesService_GetOrganizationUsage(t *testing.T) {
 	res, err := it.Next()
 	require.NoError(t, err)
 
-	usage := res.To()
+	usage := res.Items
 	assertions.Equal(1, len(usage))
 	assertions.Equal("<usage_metric_id>", usage[0].Sys.ID)
 	assertions.Equal("OrganizationPeriodicUsage", usage[0].Sys.Type)
@@ -96,7 +96,7 @@ func TestUsagesService_GetSpaceUsage(t *testing.T) {
 	res, err := it.Next()
 	require.NoError(t, err)
 
-	usage := res.To()
+	usage := res.Items
 	assertions.Equal(1, len(usage))
 	assertions.Equal("<usage_metric_id>", usage[0].Sys.ID)
 	assertions.Equal("SpacePeriodicUsage", usage[0].Sys.Type)

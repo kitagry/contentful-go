@@ -38,7 +38,7 @@ func TestAssetsService_List(t *testing.T) {
 	require.NoError(t, err)
 	collection, err := it.Next()
 	require.NoError(t, err)
-	asset := collection.To()
+	asset := collection.Items
 	assertions.Equal(3, len(asset))
 	assertions.Equal("hehehe", asset[0].Fields.Title.Map["en-US"])
 }
@@ -69,7 +69,7 @@ func TestAssetsService_ListPublished(t *testing.T) {
 	require.NoError(t, err)
 	collection, err := it.Next()
 	require.NoError(t, err)
-	asset := collection.To()
+	asset := collection.Items
 	assertions.Equal(3, len(asset))
 	assertions.Equal("hehehe", asset[0].Fields.Title.Map["en-US"])
 }

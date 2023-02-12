@@ -35,7 +35,7 @@ func ExampleContentTypesService_List() {
 		log.Fatal(err)
 	}
 
-	contentTypes := collection.To()
+	contentTypes := collection.Items
 
 	for _, contentType := range contentTypes {
 		fmt.Println(contentType.Sys.ID, contentType.Sys.PublishedAt)
@@ -143,7 +143,7 @@ func ExampleContentTypesService_Delete_allDrafts() {
 		log.Fatal(err)
 	}
 
-	contentTypes := collection.To()
+	contentTypes := collection.Items
 
 	for _, contentType := range contentTypes {
 		if contentType.Sys.PublishedAt == "" {
@@ -181,7 +181,7 @@ func TestContentTypesServiceList(t *testing.T) {
 	assertions.Nil(err)
 	collection, err := it.Next()
 	assertions.Nil(err)
-	contentType := collection.To()
+	contentType := collection.Items
 	assertions.Equal(4, len(contentType))
 	assertions.Equal("City", contentType[0].Name)
 }

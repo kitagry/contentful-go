@@ -37,7 +37,7 @@ func TestLocalesService_List(t *testing.T) {
 	assertions.Nil(err)
 	collection, err := it.Next()
 	assertions.Nil(err)
-	locale := collection.To()
+	locale := collection.Items
 	assertions.Equal("34N35DoyUQAtaKwWTgZs34", locale[0].Sys.ID)
 }
 

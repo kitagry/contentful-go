@@ -38,7 +38,7 @@ func TestAppInstallationsService_List(t *testing.T) {
 	collection, err := it.Next()
 	assertions.Nil(err)
 
-	installation := collection.To()
+	installation := collection.Items
 	assertions.Equal(1, len(installation))
 	assertions.Equal("world", installation[0].Parameters["hello"])
 }

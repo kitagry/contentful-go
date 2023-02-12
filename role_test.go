@@ -38,7 +38,7 @@ func TestRolesService_List(t *testing.T) {
 	require.NoError(t, err)
 	collection, err := it.Next()
 	require.NoError(t, err)
-	role := collection.To()
+	role := collection.Items
 	assertions.Equal(2, len(role))
 	assertions.Equal("Author", role[0].Name)
 }

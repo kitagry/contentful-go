@@ -37,7 +37,7 @@ func TestWebhookCallsService_List(t *testing.T) {
 	collection, err := it.Next()
 	assertions.Nil(err)
 
-	spaces := collection.To()
+	spaces := collection.Items
 	assertions.Equal(1, len(spaces))
 	assertions.Equal("bar", spaces[0].Sys.ID)
 }

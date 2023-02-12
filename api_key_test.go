@@ -37,7 +37,7 @@ func TestAPIKeyService_List(t *testing.T) {
 	assertions.Nil(err)
 	res, err := it.Next()
 	assertions.Nil(err)
-	keys := res.To()
+	keys := res.Items
 	assertions.Equal(1, len(keys))
 	assertions.Equal("exampleapikey", keys[0].Sys.ID)
 }

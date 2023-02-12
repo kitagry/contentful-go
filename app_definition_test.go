@@ -38,7 +38,7 @@ func TestAppDefinitionsService_List(t *testing.T) {
 	collection, err := it.Next()
 	assertions.Nil(err)
 
-	definitions := collection.To()
+	definitions := collection.Items
 	assertions.Equal(1, len(definitions))
 	assertions.Equal("app_definition_id", definitions[0].Sys.ID)
 	assertions.Equal("https://example.com/app.html", definitions[0].SRC)

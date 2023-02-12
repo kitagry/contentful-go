@@ -38,7 +38,7 @@ func TestEditorInterfacesService_List(t *testing.T) {
 	collection, err := it.Next()
 	assertions.Nil(err)
 
-	interfaces := collection.To()
+	interfaces := collection.Items
 	assertions.Equal(1, len(interfaces))
 	assertions.Equal("name", interfaces[0].Controls[0].FieldID)
 	assertions.Equal("extension", interfaces[0].SideBar[0].WidgetNameSpace)

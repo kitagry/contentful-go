@@ -37,7 +37,7 @@ func TestEntriesService_List(t *testing.T) {
 	assertions.Nil(err)
 	collection, err := it.Next()
 	assertions.Nil(err)
-	entry := collection.To()
+	entry := collection.Items
 	assertions.Equal("5KsDBWseXY6QegucYAoacS", entry[0].Sys.ID)
 }
 

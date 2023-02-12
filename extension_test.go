@@ -38,7 +38,7 @@ func TestExtensionsService_List(t *testing.T) {
 	collection, err := it.Next()
 	assertions.Nil(err)
 
-	extensions := collection.To()
+	extensions := collection.Items
 	assertions.Equal(1, len(extensions))
 	assertions.Equal("My awesome extension", extensions[0].Extension.Name)
 	assertions.Equal("https://example.com/my", extensions[0].Extension.SRC)
