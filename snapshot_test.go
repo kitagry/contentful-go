@@ -32,11 +32,9 @@ func TestSnapshotsService_ListEntrySnapshots(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	it, err := cma.Snapshots.ListEntrySnapshots(context.Background(), spaceID, "hfM9RCJIk0wIm06WkEOQY")
+	collection, err := cma.Snapshots.ListEntrySnapshots(context.Background(), spaceID, "hfM9RCJIk0wIm06WkEOQY", nil)
 	assertions.Nil(err)
-	collection, err := it.Next()
-	assertions.Nil(err)
-	entrySnapshot := collection.To()
+	entrySnapshot := collection.Items
 	assertions.Equal(1, len(entrySnapshot))
 	assertions.Equal("Hello, World!", entrySnapshot[0].EntrySnapshotDetail.Fields["title"].(map[string]interface{})["en-US"])
 }
@@ -116,11 +114,9 @@ func TestSnapshotsService_ListContentTypeSnapshots(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	it, err := cma.Snapshots.ListContentTypeSnapshots(context.Background(), spaceID, "hfM9RCJIk0wIm06WkEOQY")
+	collection, err := cma.Snapshots.ListContentTypeSnapshots(context.Background(), spaceID, "hfM9RCJIk0wIm06WkEOQY", nil)
 	assertions.Nil(err)
-	collection, err := it.Next()
-	assertions.Nil(err)
-	entrySnapshot := collection.To()
+	entrySnapshot := collection.Items
 	assertions.Equal(1, len(entrySnapshot))
 	assertions.Equal("Blog Post", entrySnapshot[0].ContentTypeSnapshotDetail.Name)
 }

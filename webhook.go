@@ -39,7 +39,7 @@ func (webhook *Webhook) GetVersion() int {
 }
 
 // List returns webhooks collection
-func (service *WebhooksService) List(ctx context.Context, spaceID string) (*Collection[Webhook], error) {
+func (service *WebhooksService) List(ctx context.Context, spaceID string, query *Query) (*Collection[Webhook], error) {
 	path := fmt.Sprintf("/spaces/%s/webhook_definitions", spaceID)
 	method := "GET"
 
@@ -48,9 +48,10 @@ func (service *WebhooksService) List(ctx context.Context, spaceID string) (*Coll
 		return nil, err
 	}
 
-	col := NewCollection[Webhook](&CollectionOptions{})
-	col.c = service.c
-	col.req = req
+	col, err := newCollection[Webhook](query, service.c, req)
+	if err != nil {
+		return nil, err
+	}
 
 	return col, nil
 }

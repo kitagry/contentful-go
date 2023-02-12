@@ -33,11 +33,9 @@ func TestOrganizationsService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	it, err := cma.Organizations.List(context.Background())
+	collection, err := cma.Organizations.List(context.Background(), nil)
 	require.NoError(t, err)
-	collection, err := it.Next()
-	require.NoError(t, err)
-	organization := collection.To()
+	organization := collection.Items
 	assertions.Equal(1, len(organization))
 	assertions.Equal("My organization", organization[0].Name)
 }

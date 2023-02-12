@@ -43,7 +43,7 @@ func (membership *Membership) GetVersion() int {
 }
 
 // List returns membership collection
-func (service *MembershipsService) List(ctx context.Context, spaceID string) (*Collection[Membership], error) {
+func (service *MembershipsService) List(ctx context.Context, spaceID string, query *Query) (*Collection[Membership], error) {
 	path := fmt.Sprintf("/spaces/%s/space_memberships", spaceID)
 
 	req, err := service.c.newRequest(ctx, http.MethodGet, path, nil, nil)
@@ -51,9 +51,10 @@ func (service *MembershipsService) List(ctx context.Context, spaceID string) (*C
 		return nil, err
 	}
 
-	col := NewCollection[Membership](&CollectionOptions{})
-	col.c = service.c
-	col.req = req
+	col, err := newCollection[Membership](query, service.c, req)
+	if err != nil {
+		return nil, err
+	}
 
 	return col, nil
 }

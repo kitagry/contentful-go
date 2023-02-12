@@ -52,7 +52,7 @@ type HealthDetails struct {
 }
 
 // List returns a webhook calls collection
-func (service *WebhookCallsService) List(ctx context.Context, spaceID, webhookID string) (*Collection[WebhookCall], error) {
+func (service *WebhookCallsService) List(ctx context.Context, spaceID, webhookID string, query *Query) (*Collection[WebhookCall], error) {
 	path := fmt.Sprintf("/spaces/%s/webhooks/%s/calls", spaceID, webhookID)
 
 	req, err := service.c.newRequest(ctx, http.MethodGet, path, nil, nil)
@@ -60,9 +60,10 @@ func (service *WebhookCallsService) List(ctx context.Context, spaceID, webhookID
 		return nil, err
 	}
 
-	col := NewCollection[WebhookCall](&CollectionOptions{})
-	col.c = service.c
-	col.req = req
+	col, err := newCollection[WebhookCall](query, service.c, req)
+	if err != nil {
+		return nil, err
+	}
 
 	return col, nil
 }

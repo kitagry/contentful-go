@@ -33,11 +33,9 @@ func TestEntryTasksService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	it, err := cma.EntryTasks.List(context.Background(), env, "5KsDBWseXY6QegucYAoacS")
+	collection, err := cma.EntryTasks.List(context.Background(), env, "5KsDBWseXY6QegucYAoacS", nil)
 	assertions.Nil(err)
-	collection, err := it.Next()
-	assertions.Nil(err)
-	entryTasks := collection.To()
+	entryTasks := collection.Items
 	assertions.Equal(1, len(entryTasks))
 	assertions.Equal("Review translation", entryTasks[0].Body)
 }

@@ -33,11 +33,9 @@ func TestAccessTokensServiceList(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	it, err := cma.AccessTokens.List(context.Background())
+	collection, err := cma.AccessTokens.List(context.Background(), nil)
 	assertions.Nil(err)
-	collection, err := it.Next()
-	assertions.Nil(err)
-	keys := collection.To()
+	keys := collection.Items
 	assertions.Equal(2, len(keys))
 	assertions.Equal("hioj6879UYGIfyt654tyfFHG", keys[0].Sys.ID)
 }

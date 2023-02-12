@@ -32,12 +32,10 @@ func TestUsagesService_GetOrganizationUsage(t *testing.T) {
 	// cma client
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
-	it, err := cma.Usages.GetOrganizationUsage(context.Background(), "organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03")
-	require.NoError(t, err)
-	res, err := it.Next()
+	res, err := cma.Usages.GetOrganizationUsage(context.Background(), "organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03", nil)
 	require.NoError(t, err)
 
-	usage := res.To()
+	usage := res.Items
 	assertions.Equal(1, len(usage))
 	assertions.Equal("<usage_metric_id>", usage[0].Sys.ID)
 	assertions.Equal("OrganizationPeriodicUsage", usage[0].Sys.Type)
@@ -64,9 +62,7 @@ func TestUsagesService_GetOrganizationUsage_2(t *testing.T) {
 	// cma client
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
-	it, err := cma.Usages.GetOrganizationUsage(context.Background(), "organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03")
-	assertions.Nil(err)
-	_, err = it.Next()
+	_, err = cma.Usages.GetOrganizationUsage(context.Background(), "organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03", nil)
 	assertions.NotNil(err)
 }
 
@@ -91,12 +87,10 @@ func TestUsagesService_GetSpaceUsage(t *testing.T) {
 	// cma client
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
-	it, err := cma.Usages.GetSpaceUsage(context.Background(), "organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03")
-	require.NoError(t, err)
-	res, err := it.Next()
+	res, err := cma.Usages.GetSpaceUsage(context.Background(), "organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03", nil)
 	require.NoError(t, err)
 
-	usage := res.To()
+	usage := res.Items
 	assertions.Equal(1, len(usage))
 	assertions.Equal("<usage_metric_id>", usage[0].Sys.ID)
 	assertions.Equal("SpacePeriodicUsage", usage[0].Sys.Type)
@@ -123,8 +117,6 @@ func TestUsagesService_GetSpaceUsage_2(t *testing.T) {
 	// cma client
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
-	it, err := cma.Usages.GetSpaceUsage(context.Background(), "organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03")
-	assertions.Nil(err)
-	_, err = it.Next()
+	_, err = cma.Usages.GetSpaceUsage(context.Background(), "organization_id", "-usage", "cma,cpa,gql", "2020-01-01", "2020-01-03", nil)
 	assertions.NotNil(err)
 }

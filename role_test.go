@@ -34,11 +34,9 @@ func TestRolesService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	it, err := cma.Roles.List(context.Background(), spaceID)
+	collection, err := cma.Roles.List(context.Background(), spaceID, nil)
 	require.NoError(t, err)
-	collection, err := it.Next()
-	require.NoError(t, err)
-	role := collection.To()
+	role := collection.Items
 	assertions.Equal(2, len(role))
 	assertions.Equal("Author", role[0].Name)
 }

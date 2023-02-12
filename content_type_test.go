@@ -26,16 +26,12 @@ func ExampleContentTypesService_Get() {
 func ExampleContentTypesService_List() {
 	cma := NewCMA("cma-token")
 
-	it, err := cma.ContentTypes.List(context.Background(), env)
-	if err != nil {
-		log.Fatal(err)
-	}
-	collection, err := it.Next()
+	collection, err := cma.ContentTypes.List(context.Background(), env, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	contentTypes := collection.To()
+	contentTypes := collection.Items
 
 	for _, contentType := range contentTypes {
 		fmt.Println(contentType.Sys.ID, contentType.Sys.PublishedAt)
@@ -134,16 +130,12 @@ func ExampleContentTypesService_Delete() {
 func ExampleContentTypesService_Delete_allDrafts() {
 	cma := NewCMA("cma-token")
 
-	it, err := cma.ContentTypes.List(context.Background(), env)
-	if err != nil {
-		log.Fatal(err)
-	}
-	collection, err := it.Next()
+	collection, err := cma.ContentTypes.List(context.Background(), env, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	contentTypes := collection.To()
+	contentTypes := collection.Items
 
 	for _, contentType := range contentTypes {
 		if contentType.Sys.PublishedAt == "" {
@@ -177,11 +169,9 @@ func TestContentTypesServiceList(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	it, err := cma.ContentTypes.List(context.Background(), env)
+	collection, err := cma.ContentTypes.List(context.Background(), env, nil)
 	assertions.Nil(err)
-	collection, err := it.Next()
-	assertions.Nil(err)
-	contentType := collection.To()
+	contentType := collection.Items
 	assertions.Equal(4, len(contentType))
 	assertions.Equal("City", contentType[0].Name)
 }
@@ -208,9 +198,7 @@ func TestContentTypesServiceListActivated(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	it, err := cma.ContentTypes.ListActivated(context.Background(), env)
-	assertions.Nil(err)
-	_, err = it.Next()
+	_, err = cma.ContentTypes.ListActivated(context.Background(), env, nil)
 	assertions.Nil(err)
 }
 

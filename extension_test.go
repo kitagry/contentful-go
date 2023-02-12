@@ -33,12 +33,10 @@ func TestExtensionsService_List(t *testing.T) {
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
 
-	it, err := cma.Extensions.List(context.Background(), env)
-	assertions.Nil(err)
-	collection, err := it.Next()
+	collection, err := cma.Extensions.List(context.Background(), env, nil)
 	assertions.Nil(err)
 
-	extensions := collection.To()
+	extensions := collection.Items
 	assertions.Equal(1, len(extensions))
 	assertions.Equal("My awesome extension", extensions[0].Extension.Name)
 	assertions.Equal("https://example.com/my", extensions[0].Extension.SRC)

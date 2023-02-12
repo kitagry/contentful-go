@@ -32,11 +32,9 @@ func TestWebhooksService_List(t *testing.T) {
 	// cma client
 	cma = NewCMA(CMAToken)
 	cma.BaseURL = server.URL
-	it, err := cma.Webhooks.List(context.Background(), spaceID)
+	collection, err := cma.Webhooks.List(context.Background(), spaceID, nil)
 	assertions.Nil(err)
-	collection, err := it.Next()
-	assertions.Nil(err)
-	webhook := collection.To()
+	webhook := collection.Items
 	assertions.Equal(1, len(webhook))
 	assertions.Equal("webhook-name", webhook[0].Name)
 }
