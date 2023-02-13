@@ -77,6 +77,8 @@ func newCollection[T any](query *Query, client *Client, req *http.Request) (*Col
 
 // Next makes the col.req
 func (col *Collection[T]) Next(ctx context.Context) (*Collection[T], error) {
+	col.req = col.req.WithContext(ctx)
+
 	// setup query params
 	skip := uint16(col.Limit) * (col.page - 1)
 	col.query.Skip(skip)
