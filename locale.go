@@ -112,11 +112,11 @@ func (service *LocalesService) Upsert(ctx context.Context, spaceID string, local
 	var path string
 	var method string
 
-	if locale.Sys != nil && locale.Sys.CreatedAt != ""  {
-		path = fmt.Sprintf("/spaces/%s/locales/%s", spaceID, locale.Sys.ID)
-		method = "PUT"
-	} else if locale.Sys != nil && locale.ENV_ID != "" {
+	if locale.Sys != nil && locale.ENV_ID != "" {
 		path = fmt.Sprintf("/spaces/%s/environments/%s/locales", spaceID, locale.ENV_ID)
+		method = "PUT"
+	} else if locale.Sys != nil && locale.Sys.CreatedAt != "" {
+		path = fmt.Sprintf("/spaces/%s/locales/%s", spaceID, locale.Sys.ID)
 		method = "PUT"
 	} else {
 		path = fmt.Sprintf("/spaces/%s/locales", spaceID)
